@@ -53,5 +53,4 @@ Usuarios de negocio, analistas, responsables de gobierno y soporte con acceso de
 
 - revisar primero los registros inactivos inesperados;
 - usar notas para justificar decisiones funcionales;
-- no interpretar `usageIndicator` como consumo real soportado;
 - contrastar con el origen si un agente crítico aparece inactivo.
