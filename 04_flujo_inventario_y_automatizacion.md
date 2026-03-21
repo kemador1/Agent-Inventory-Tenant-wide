@@ -355,7 +355,6 @@ El comportamiento actual del flujo debe interpretarse así:
 
 ## Hallazgo relevante de consistencia
 
-El trigger del flujo en `2.2.0.3` es `Recurrence`, pero el HTML del correo todavía muestra `Modo de disparo: Botón manual`. Se recomienda ajustar ese literal para que el informe refleje el comportamiento real.
 - reaparición posterior: vuelve a activo;
 - sin borrado físico automático.
 
