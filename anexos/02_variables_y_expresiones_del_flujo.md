@@ -6,7 +6,7 @@
 | --- | --- |
 | `varCreated` | contador de registros creados |
 | `varUpdated` | contador de registros actualizados |
-| `varDeleted` | contador operativo de registros marcados ausentes o inactivos |
+| `varMarkedMissing` | contador operativo de registros marcados ausentes o inactivos |
 | `varErrors` | colección de errores |
 | `varProcessedAgents` | colección de agentes procesados en la ejecución |
 | `varRunStartTime` | timestamp de inicio |
@@ -26,6 +26,7 @@
 
 ## Acciones clave
 
+- `Recurrence` (trigger)
 - `QueryResources`
 - `Compose_Normalized_ModelProvider`
 - `Compose_Normalized_ModelName`
@@ -75,6 +76,7 @@ El flujo genera HTML con:
 
 ## Observaciones operativas
 
+- el trigger actual es programado (`Recurrence`);
 - el flujo usa paginación del origen mediante `SkipToken`;
 - el cleanup actual inactiva registros no observados;
 - el correo todavía debe leerse como informe operativo, no como certificación funcional ni financiera.

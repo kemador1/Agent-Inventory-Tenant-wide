@@ -62,17 +62,19 @@ El archivo empaquetado del reporte es un `.wdl` clásico y debe considerarse par
 
 ## Web resources incluidos
 
-La `2.2.0.2` vuelve a incorporar recursos web:
+La `2.2.0.3` incorpora estos recursos web:
 
 - `kyn_Bienvenida_Agent_Inventory`
 - `kyn_dashboard`
 - `kyn_chatgpt_icon`
 - `kyn_claude_ai_icon`
 - `kyn_copilot_icon`
+- `kyn_copilo_ticon`
 - `kyn_kyn_agent_model_icon`
 - `kyn_kyn_agent_model_icon_host`
 
 Estos recursos sirven para experiencia visual, bienvenida e iconografía.
+
 
 ## Lectura correcta de los indicadores
 

@@ -3,7 +3,7 @@
 ## Identificación
 
 - Solución: `kynagentinventorytenantwide`
-- Versión candidata documentada: `2.2.0.2`
+- Versión candidata documentada: `2.2.0.3`
 - Paquetes previstos: managed y unmanaged
 
 ## Prerrequisitos
@@ -40,6 +40,23 @@
 - un agente observado queda activo;
 - un agente no observado queda inactivo;
 - los `WebResources` visuales cargan sin error.
+
+## Dependencias y advertencias observadas en `2.2.0.3`
+
+- Dependencia de control: `MscrmControls.Grid.PCFGridControl` (`BaseCustomControlsCore`).
+- App settings requeridos:
+  - `EnablePowerBIQuickReport`
+  - `FormFillBarUXEnabled`
+  - `HeaderAndNavigationRefresh` (`msdyn_AppFrameworkInfraExtensions`)
+
+Si el entorno destino no dispone de esos paquetes o ajustes, la importación puede completarse con warnings.
+
+## Idioma del reporte clásico
+
+El reporte empaquetado usa idioma `3082` (es-ES). En entornos sin español habilitado puede aparecer warning de importación del reporte. Opciones:
+
+- habilitar `3082` en el entorno destino;
+- o cambiar idioma del reporte a `1033` en la solución para máxima portabilidad.
 
 ## Consideraciones de despliegue
 

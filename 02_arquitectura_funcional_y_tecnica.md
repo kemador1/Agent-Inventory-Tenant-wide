@@ -59,7 +59,7 @@ La solución sigue un patrón de inventario incremental lógico:
 
 ## Recursos visuales y experiencia
 
-La `2.2.0.2` sí incluye `WebResources` en el paquete:
+La `2.2.0.3` sí incluye `WebResources` en el paquete:
 
 - iconos SVG de proveedor;
 - recurso HTML de bienvenida;

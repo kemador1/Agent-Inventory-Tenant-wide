@@ -7,6 +7,8 @@
 | visión parcial del origen en una ejecución | alto | vigente | contrastar el estado inactivo con el origen si el volumen de ausentes es anómalo |
 | cambios falsos por formato o serialización | medio | parcialmente mitigado | restringir comparaciones a campos materiales y revisar expresiones |
 | dependencia de nombres exactos en `WebResources` | medio | vigente | documentar nombres lógicos y validar formularios tras importar |
+| dependencias de plataforma no presentes en todos los tenants | medio/alto | vigente | validar paquetes base y app settings antes de importar |
+| warning de idioma de reporte (`3082`) en entornos no ES | medio | vigente | habilitar español o mover reporte a idioma neutro |
 | sobreinterpretación de indicadores derivados | medio | vigente | documentar que no son telemetría soportada de BizChat |
 | coexistencia de campos legacy y campos activos | bajo/medio | vigente | aclarar en documentación qué campos son operativos y cuáles son de compatibilidad |
 
@@ -24,3 +26,4 @@
 - decidir si se simplifican o activan formalmente los campos de gobierno presentes en esquema;
 - reforzar la visibilidad del reporte clásico desde la app;
 - normalizar mejor el tratamiento de iconografía por modelo;
+- resolver la estrategia de idioma del reporte para entornos sin `3082`;
