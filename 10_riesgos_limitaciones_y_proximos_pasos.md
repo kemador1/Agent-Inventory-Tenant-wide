@@ -19,11 +19,14 @@
 - la solución no recupera prompts o sesiones completas soportadas de Copilot Chat por agente;
 - el estado inactivo debe leerse como ausencia observada en la última ejecución, no como baja definitiva confirmada;
 - la iconografía dinámica en formulario no está cerrada como componente estándar productivo dentro de esta candidata.
+- existe duplicidad funcional de icono (`kyn_copilot_icon` y `kyn_copilo_ticon`) que debe aclararse.
 
 ## Próximos pasos recomendados
 
 - estabilizar definitivamente la lógica de reporte y correo;
+- alinear el literal de modo de disparo en correo con `Recurrence`;
 - decidir si se simplifican o activan formalmente los campos de gobierno presentes en esquema;
 - reforzar la visibilidad del reporte clásico desde la app;
 - normalizar mejor el tratamiento de iconografía por modelo;
 - resolver la estrategia de idioma del reporte para entornos sin `3082`;
+- depurar y consolidar documentación de release a partir de la `2.2.0.3`.

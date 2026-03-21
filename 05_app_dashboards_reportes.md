@@ -75,6 +75,7 @@ La `2.2.0.3` incorpora estos recursos web:
 
 Estos recursos sirven para experiencia visual, bienvenida e iconografía.
 
+Nota de calidad técnica: en esta candidata conviven `kyn_copilot_icon` y `kyn_copilo_ticon`. Conviene revisar si la duplicidad es intencional o un artefacto de evolución de iconos.
 
 ## Lectura correcta de los indicadores
 
