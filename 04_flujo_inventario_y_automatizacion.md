@@ -4,7 +4,7 @@
 
 - Nombre: `KYN Agent Inventory tenant-wide`
 - Archivo: `Workflows/KYNAgentInventorytenant-wide-EAE8C024-3BE4-4BD6-BAD5-E14E3435C632.json`
-- Tipo de disparo: manual
+- Tipo de disparo: programado (`Recurrence`)
 
 ## Conectores utilizados
 
@@ -17,7 +17,8 @@
 
 ```mermaid
 flowchart TD
-    A["Inicio manual del flujo"]:::trigger
+    A["Inicio programado del flujo
+    (Recurrence)"]:::trigger
     B["Inicializa variables:
     contadores, debug, start time, skip token"]:::init
     C["QueryResources
@@ -107,11 +108,103 @@ flowchart TD
 - rosa: envío del informe;
 - morado claro: trazabilidad y logging.
 
+## Diagrama híbrido (arquitectura + excepciones)
+
+```mermaid
+flowchart LR
+    subgraph T["Trigger"]
+      T1["Recurrence"]:::trigger
+    end
+
+    subgraph I["Inicialización"]
+      I1["Init vars:
+      created, updated, markedMissing,
+      errors, processedAgents, skipToken, runStart"]:::init
+    end
+
+    subgraph D["Discover y Paginación"]
+      D1["QueryResources
+      microsoft.copilotstudio/agents"]:::source
+      D2{"skipToken vacío?"}:::decision
+      D3["Set varSkipToken NextPage"]:::source
+    end
+
+    subgraph P["Proceso por Agente"]
+      P1["Scope_Process_Agent"]:::scope
+      P2["Resolver creator/owner
+      (Office 365 Users)"]:::identity
+      P3["Composes:
+      modelProvider, modelName, activity"]:::compose
+      P4["List Existing by key
+      agentId + environmentId"]:::dataverse
+      P5{"Existe registro?"}:::decision
+      P6["Create_Agent_Record
+      state=Active"]:::write
+      P7["Compose_Existing_Record"]:::compose
+      P8{"Condition_Has_Changes"}:::decision
+      P9["Compose_Change_Details"]:::compose
+      P10["Update_Agent_Record
+      state=Active"]:::write
+      P11["Refresh_Seen_Metadata"]:::write
+      P12["Append_ProcessedAgent"]:::log
+      P13["Append_Error_If_Failed"]:::error
+    end
+
+    subgraph C["Cleanup"]
+      C1["List_All_Agent_Records"]:::dataverse
+      C2{"Agent procesado en run?"}:::decision
+      C3["Update_Stale_Record
+      statecode=1 statuscode=2"]:::cleanup
+      C4["Increment varMarkedMissing"]:::cleanup
+    end
+
+    subgraph N["Salida"]
+      N1["Compose_Final_Result"]:::compose
+      N2{"Hay destinatarios?"}:::decision
+      N3["Send an email (V2)"]:::mail
+      N4["Terminate Succeeded"]:::trigger
+    end
+
+    T1 --> I1 --> D1 --> D3 --> D2
+    D2 -->|No| D1
+    D2 -->|Sí| P1
+
+    P1 --> P2 --> P3 --> P4 --> P5
+    P5 -->|No| P6 --> P12
+    P5 -->|Sí| P7 --> P8
+    P8 -->|Sí| P9 --> P10 --> P12
+    P8 -->|No| P11 --> P12
+    P1 -. fallo .-> P13
+
+    P12 --> C1 --> C2
+    C2 -->|No| C3 --> C4 --> N1
+    C2 -->|Sí| N1
+    P13 --> N1
+
+    N1 --> N2
+    N2 -->|Sí| N3 --> N4
+    N2 -->|No| N4
+
+    classDef trigger fill:#0f172a,color:#ffffff,stroke:#0f172a,stroke-width:1px;
+    classDef init fill:#e0f2fe,color:#0f172a,stroke:#38bdf8,stroke-width:1px;
+    classDef source fill:#dbeafe,color:#0f172a,stroke:#2563eb,stroke-width:1px;
+    classDef identity fill:#ede9fe,color:#1f1b4b,stroke:#8b5cf6,stroke-width:1px;
+    classDef compose fill:#fff7ed,color:#7c2d12,stroke:#f59e0b,stroke-width:1px;
+    classDef dataverse fill:#dcfce7,color:#14532d,stroke:#22c55e,stroke-width:1px;
+    classDef write fill:#f0fdf4,color:#14532d,stroke:#16a34a,stroke-width:1px;
+    classDef cleanup fill:#fee2e2,color:#7f1d1d,stroke:#ef4444,stroke-width:1px;
+    classDef mail fill:#fce7f3,color:#831843,stroke:#ec4899,stroke-width:1px;
+    classDef log fill:#f3e8ff,color:#581c87,stroke:#a855f7,stroke-width:1px;
+    classDef scope fill:#ecfeff,color:#164e63,stroke:#06b6d4,stroke-width:1px;
+    classDef decision fill:#f8fafc,color:#111827,stroke:#64748b,stroke-width:1.5px;
+    classDef error fill:#ffe4e6,color:#881337,stroke:#fb7185,stroke-width:1px;
+```
+
 ## Variables principales
 
 - `varCreated`
 - `varUpdated`
-- `varDeleted`
+- `varMarkedMissing`
 - `varErrors`
 - `varProcessedAgents`
 - `varRunStartTime`
@@ -152,7 +245,7 @@ flowchart TD
 10. Añade el agente a `varProcessedAgents`.
 11. Tras el recorrido, ejecuta cleanup sobre los registros no observados.
 12. Para los no observados:
-   - incrementa `varDeleted` como contador operativo de ausentes/inactivos;
+   - incrementa `varMarkedMissing` como contador operativo de ausentes/inactivos;
    - actualiza `statecode = 1` y `statuscode = 2`;
    - mantiene el registro sin borrado físico.
 13. Construye un resultado final y envía correo HTML en español.
@@ -258,6 +351,11 @@ El comportamiento actual del flujo debe interpretarse así:
 
 - no observado en la ejecución actual: inactivo;
 - observado en la ejecución actual: activo;
+- reaparición posterior: activo de nuevo.
+
+## Hallazgo relevante de consistencia
+
+El trigger del flujo en `2.2.0.3` es `Recurrence`, pero el HTML del correo todavía muestra `Modo de disparo: Botón manual`. Se recomienda ajustar ese literal para que el informe refleje el comportamiento real.
 - reaparición posterior: vuelve a activo;
 - sin borrado físico automático.
 
