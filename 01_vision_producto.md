@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-`KYN Agent Inventory Tenant-wide` es una solución de Power Platform orientada a construir y operar un inventario centralizado de agentes a nivel tenant. Su propósito es ofrecer una vista única, trazable y explotable de los agentes descubiertos en el origen soportado, consolidando el dato en Dataverse y poniéndolo a disposición de negocio, gobierno y soporte.
+`Agent Inventory Tenant-wide` es una solución de Power Platform orientada a construir y operar un inventario centralizado de agentes a nivel tenant. Su propósito es ofrecer una vista única, trazable y explotable de los agentes descubiertos en el origen soportado, consolidando el dato en Dataverse y poniéndolo a disposición de negocio, gobierno y soporte.
 
 ## Problema que resuelve
 
