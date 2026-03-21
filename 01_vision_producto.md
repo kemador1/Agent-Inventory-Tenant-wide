@@ -43,9 +43,8 @@ Esta versión:
 
 - no crea ni modifica agentes en origen;
 - no calcula coste real PAYG por agente;
-- no ofrece telemetría soportada de BizChat o Copilot Chat por agente;
+- no ofrece telemetría;
 - no realiza borrado físico automático del inventario;
-- no ejecuta un flujo separado de enriquecimiento en esta release candidate.
 
 ## Resultado esperado
 
