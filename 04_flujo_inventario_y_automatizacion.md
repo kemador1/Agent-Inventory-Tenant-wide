@@ -13,6 +13,100 @@
 - `Office 365 Users`
 - conector de correo para envío del informe
 
+## Diagrama operativo del flujo
+
+```mermaid
+flowchart TD
+    A["Inicio manual del flujo"]:::trigger
+    B["Inicializa variables:
+    contadores, debug, start time, skip token"]:::init
+    C["QueryResources
+    recurso: microsoft.copilotstudio/agents"]:::source
+    D{"¿Hay página de resultados?"}:::decision
+    E["Actualizar varSkipToken
+    y repetir consulta"]:::source
+
+    F["Apply to each Agent"]:::loop
+    G["Resolver creator y owner
+    con Office 365 Users"]:::identity
+    H["Normalizar:
+    provider, model, usage, activity"]:::compose
+    I["List rows en Dataverse
+    por agentId + environmentId"]:::dataverse
+    J{"¿Existe registro?"}:::decision
+
+    K["Crear registro en Dataverse
+    estado activo"]:::write
+    L["Compose Existing Record"]:::compose
+    M{"Condition_Has_Changes"}:::decision
+    N["Compose_Change_Details
+    HTML campo anterior -> nuevo"]:::compose
+    O["Update row
+    datos + estado activo"]:::write
+    P["Append varDebugLog
+    detalle del cambio"]:::log
+    Q["Update técnico
+    refresh de señales de visibilidad"]:::write
+    R["Append varProcessedAgents"]:::log
+
+    S["List rows candidatos a cleanup"]:::dataverse
+    T["Apply to each registro inventariado"]:::loop
+    U{"¿El registro fue procesado
+    en la ejecución actual?"}:::decision
+    V["Mantener sin cambios
+    de cleanup"]:::write
+    W["Update row
+    statecode = 1
+    statuscode = 2"]:::cleanup
+    X["Incrementa contador operativo
+    de ausentes/inactivos"]:::cleanup
+
+    Y["Compose_Final_Result"]:::compose
+    Z["Enviar correo HTML
+    branding + resumen + debug"]:::mail
+    AA["Fin"]:::trigger
+
+    A --> B --> C --> D
+    D -->|Sí, hay datos| F
+    D -->|Hay más páginas| E --> C
+    D -->|No hay más páginas| S
+
+    F --> G --> H --> I --> J
+    J -->|No existe| K --> R
+    J -->|Existe| L --> M
+    M -->|Sí hay cambios| N --> O --> P --> R
+    M -->|No hay cambios| Q --> R
+    R --> F
+
+    S --> T --> U
+    U -->|Sí| V --> T
+    U -->|No| W --> X --> T
+    T --> Y --> Z --> AA
+
+    classDef trigger fill:#0f172a,color:#ffffff,stroke:#0f172a,stroke-width:1px;
+    classDef init fill:#e0f2fe,color:#0f172a,stroke:#38bdf8,stroke-width:1px;
+    classDef source fill:#dbeafe,color:#0f172a,stroke:#2563eb,stroke-width:1px;
+    classDef identity fill:#ede9fe,color:#1f1b4b,stroke:#8b5cf6,stroke-width:1px;
+    classDef compose fill:#fff7ed,color:#7c2d12,stroke:#f59e0b,stroke-width:1px;
+    classDef dataverse fill:#dcfce7,color:#14532d,stroke:#22c55e,stroke-width:1px;
+    classDef write fill:#f0fdf4,color:#14532d,stroke:#16a34a,stroke-width:1px;
+    classDef cleanup fill:#fee2e2,color:#7f1d1d,stroke:#ef4444,stroke-width:1px;
+    classDef mail fill:#fce7f3,color:#831843,stroke:#ec4899,stroke-width:1px;
+    classDef log fill:#f3e8ff,color:#581c87,stroke:#a855f7,stroke-width:1px;
+    classDef loop fill:#ecfeff,color:#164e63,stroke:#06b6d4,stroke-width:1px;
+    classDef decision fill:#f8fafc,color:#111827,stroke:#64748b,stroke-width:1.5px;
+```
+
+## Lectura del diagrama
+
+- azul: lectura del origen y paginación;
+- violeta: resolución de identidad;
+- naranja: composición y normalización;
+- verde: lectura y escritura funcional en Dataverse;
+- rojo: cleanup e inactivación;
+- rosa: envío del informe;
+- morado claro: trazabilidad y logging.
+
 ## Variables principales
 
 - `varCreated`
@@ -62,6 +156,68 @@
    - actualiza `statecode = 1` y `statuscode = 2`;
    - mantiene el registro sin borrado físico.
 13. Construye un resultado final y envía correo HTML en español.
+
+## Bloques funcionales
+
+### 1. Descubrimiento y paginación
+
+El flujo consulta el origen administrativo con `QueryResources` y mantiene un ciclo controlado por `varSkipToken` hasta agotar las páginas disponibles.
+
+### 2. Resolución de identidad
+
+Para cada agente, intenta convertir `createdBy` y `ownerId` en nombre visible y correo. Si no puede resolverlos:
+
+- usa valores de fallback para display;
+- deja vacío el email cuando no exista identidad resoluble.
+
+### 3. Normalización
+
+Antes de persistir, calcula:
+
+- proveedor de modelo;
+- modelo normalizado;
+- indicador de actividad;
+- indicador de uso.
+
+Estas composiciones permiten reporting y comparación sin depender del JSON bruto.
+
+### 4. Upsert lógico
+
+La lógica no usa una simple escritura ciega:
+
+- primero busca por clave funcional;
+- crea si no existe;
+- compara si existe;
+- actualiza solo si detecta cambio material.
+
+### 5. Trazabilidad de cambios
+
+`Compose_Change_Details` genera un bloque HTML con:
+
+- nombre del campo;
+- valor anterior;
+- valor nuevo.
+
+Ese contenido se agrega a `varDebugLog` y se inserta después en el correo final.
+
+### 6. Cleanup
+
+Tras procesar los agentes observados:
+
+- lista registros inventariados;
+- comprueba cuáles no aparecen en `varProcessedAgents`;
+- los marca inactivos en Dataverse;
+- incrementa el contador operativo de ausentes.
+
+### 7. Informe
+
+El correo resume:
+
+- creados;
+- actualizados;
+- ausentes o inactivos;
+- errores;
+- detalle de cambios materiales.
 
 ## Comparación material
 
