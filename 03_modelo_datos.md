@@ -5,8 +5,6 @@
 - Nombre lógico real: `kyn_agenttenantwide`
 - Nombre funcional: inventario tenant-wide de agentes
 
-Nota: en algunos borradores se ha referido informalmente como `yb_agenttenantwide`, pero la tabla implementada en la solución es `kyn_agenttenantwide`.
-
 ## Criterios de modelado
 
 La tabla se diseña para cubrir cuatro necesidades:
