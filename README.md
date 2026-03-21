@@ -50,6 +50,4 @@ La `2.2.0.2` incorpora:
 
 ## Fuera de alcance
 
-- coste real PAYG por agente;
-- telemetría soportada de sesiones o prompts de BizChat por agente;
 - administración del origen desde esta solución.
