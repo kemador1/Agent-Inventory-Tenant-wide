@@ -24,5 +24,3 @@
 - decidir si se simplifican o activan formalmente los campos de gobierno presentes en esquema;
 - reforzar la visibilidad del reporte clásico desde la app;
 - normalizar mejor el tratamiento de iconografía por modelo;
-- valorar ejecución programada si se desea operación diaria sin intervención manual;
-- depurar y consolidar documentación de release a partir de la `2.2.0.2`.
