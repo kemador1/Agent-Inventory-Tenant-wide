@@ -1,31 +1,20 @@
-# Agent Inventory
+# Power Platform Solution
 
-## Project Overview
-The Agent Inventory Project is a management system for tracking and controlling tenant-wide assets. It allows organizations to manage agents, gather inventory, and optimize asset utilization at a large scale.
-
-## Quick Start
-1. Clone the repository: `git clone https://github.com/kemador1/Agent-Inventory-Tenant-wide.git`
-2. Navigate to the directory: `cd Agent-Inventory-Tenant-wide`
-3. Install dependencies: `npm install`
-4. Start the application: `npm start`
+This repository contains a Power Platform solution that includes various applications, connectors, and components built for the Agent Inventory Tenant-wide functionality. The solution is designed to streamline asset management and enhance user experience across platforms.
 
 ## Features
-- Centralized management of agents and assets.
-- Real-time tracking and reporting.
-- User-friendly interface for easy navigation.
-- Integration with various APIs for enhanced functionality.
+- Asset management dashboards
+- Automation with Power Automate
+- Custom connectors for data integration
 
-## Architecture
-The system is built on a microservices architecture facilitating scalability and maintainability. Each service is designed to handle specific functionalities, enabling independent development and deployment.
+## Getting Started
+To get started:
+1. Clone the repository.
+2. Import the solution into your Power Platform environment.
+3. Configure any necessary environment variables and connections.
 
-## Usage
-This application can be used to:
-- Manage agent profiles and their inventory.
-- Generate detailed reports on asset utilization.
-- Set notifications for asset statuses.
+## Contribution
+Contributions are welcome! Please open an issue or a pull request if you'd like to share your enhancements or bug fixes.
 
-## Navigation to Detailed Documentation
-For a comprehensive guide on the features and functionalities, please refer to the [Documentation](https://github.com/kemador1/Agent-Inventory-Tenant-wide/docs).
-
-## Contact
-For questions or support, please contact the project maintainer.
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
