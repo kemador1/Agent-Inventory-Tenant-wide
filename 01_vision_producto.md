@@ -25,7 +25,7 @@ La solución corrige este problema centralizando el inventario y automatizando l
 - deja evidencia explícita de qué cambios han provocado una actualización;
 - mejora la adopción controlada de agentes al disponer de estado, owner y contexto técnico.
 
-## Alcance real de la release candidate `2.2.0.3`
+## Alcance
 
 Esta versión:
 
@@ -39,7 +39,7 @@ Esta versión:
 - expone el dato mediante app model-driven, dashboards y reporte clásico;
 - incluye recursos web HTML/SVG para navegación, bienvenida e iconografía.
 
-## Qué no hace esta versión
+## Qué no hace
 
 - no crea ni modifica agentes en origen;
 - no calcula coste real PAYG por agente;
