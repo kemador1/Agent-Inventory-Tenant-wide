@@ -1,35 +1,55 @@
 # 01 - Resumen funcional
 
-## Objetivo
-Centralizar el inventario de agentes del tenant, facilitar gobierno y habilitar reportes por suscripción de usuario.
+## Proposito
 
-## Componentes principales
-- Tabla principal de inventario: `kyn_agenttenantwide`
-- Tabla de suscripciones: `kyn_suscripcionesdeinformes`
-- Flujo principal: `KYN Agent Inventory tenant-wide_ whitout UPN search`
-- App model-driven: módulo con acceso a inventario y suscripciones
+`Agent Inventory Tenant-wide` es una solucion de gobierno y observabilidad sobre agentes desplegados en el tenant. Su funcion principal es consolidar informacion tecnica y operativa en Dataverse, exponerla en una app model-driven y distribuir reportes segun reglas de suscripcion gestionadas por los propios usuarios autorizados.
 
-## Principios de diseño
-- Las tablas reflejan únicamente los datos necesarios de la consulta.
-- Configuración de destinatarios y modo de reporte en tabla/app (no hardcoded en HTML).
-- Compatibilidad con fallback legacy para `kyn_reportmode` mientras exista dato histórico.
+## Alcance funcional
 
-## Lógica de suscripción
-Cada fila activa de `kyn_suscripcionesdeinformes` define:
-- Email destino (`kyn_recipientemail`)
-- Tipo de reporte (`kyn_reportmodecode`)
+- Inventario centralizado de agentes en una tabla maestra.
+- Persistencia consistente de metadatos relevantes para gobierno y seguimiento.
+- App model-driven para consulta de inventario y administracion de suscripciones.
+- Flujo automatizado de sincronizacion e informes.
+- Modelo de suscripcion por usuario para controlar si recibe reporte y que tipo de contenido recibe.
 
-## Regla de envío recomendada
-Enviar solo si:
-- Email válido (longitud mínima o contiene `@`)
-- Modo distinto de `OFF` y `NONE`
+## Problema de negocio que resuelve
 
-Expresión recomendada de condición:
+Antes de esta solucion, la visibilidad sobre agentes podia quedar distribuida en varias fuentes, con trazabilidad limitada y sin una forma coherente de informar a cada interesado. La solucion elimina ese desacoplamiento y establece una capa unica de control:
 
-```text
-@and(
-  contains(trim(string(item()?['kyn_recipientemail'])), '@'),
-  not(equals(outputs('Compose_RecipientMode'), 'NONE')),
-  not(equals(outputs('Compose_RecipientMode'), 'OFF'))
-)
-```
+- una fuente maestra de inventario;
+- una experiencia operacional unica dentro de Power Platform;
+- una politica de reporte gestionada desde la propia app.
+
+## Capacidades principales
+
+### Inventario tenant-wide
+
+El flujo principal consulta el origen definido, procesa cada registro y sincroniza la tabla `kyn_agenttenantwide`. La intencion de diseno es que la tabla conserve los atributos realmente relevantes del origen y no se convierta en un contenedor generico sin gobierno.
+
+### Suscripciones de reportes
+
+La tabla `kyn_suscripcionesdeinformes` centraliza la configuracion de distribucion:
+
+- `kyn_name`: identificador funcional del registro;
+- `kyn_recipientemail`: destinatario real;
+- `kyn_reportmodecode`: modo de reporte soportado por la solucion;
+- `kyn_reportmode`: compatibilidad heredada para fallback.
+
+### Modos de reporte
+
+La solucion trabaja con modos claros de consumo:
+
+- `148250000`: Complete report (all agents)
+- `148250001`: Created agents only
+- `148250002`: Created by users (exclude system)
+- `148250003`: Changes only since last run
+- `148250004`: Do not send report
+
+## Resultado esperado
+
+El resultado esperado no es solo un flujo que funciona. El resultado esperado es una solucion de Power Platform coherente, donde:
+
+- el modelo de datos soporta el flujo;
+- la app soporta la operacion;
+- las suscripciones soportan la comunicacion;
+- la documentacion soporta despliegue, soporte y evolucion.

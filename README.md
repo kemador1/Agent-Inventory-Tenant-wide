@@ -1,42 +1,39 @@
 # Agent Inventory Tenant-wide
 
-Repositorio de release para la solución de Power Platform **Agent Inventory Tenant-wide**.
+Documentacion oficial de la solucion Power Platform `Agent Inventory Tenant-wide`.
 
-## Versión publicada
-- **Paquete managed:** `kynagentinventorytenantwide_2_7_0_7_managed.zip`
-- **Tipo:** Managed
-- **Objetivo:** Inventario tenant-wide de agentes y envío de reportes configurables por usuario desde la app model-driven.
+Este repositorio ya no contiene notas sueltas de release. La documentacion se ha reorganizado como documentacion formal de solucion: alcance funcional, arquitectura, modelo de datos, automatizacion, app model-driven, seguridad, despliegue, operacion y troubleshooting.
 
-## Contenido del repositorio
-- `kynagentinventorytenantwide_2_7_0_7_managed.zip`
+## Objetivo de la solucion
+
+La solucion proporciona inventario tenant-wide de agentes, consolidacion en Dataverse, visualizacion operativa en app model-driven y distribucion de reportes personalizables por usuario a partir de una tabla de suscripciones mantenida en la propia aplicacion.
+
+## Principios de diseno
+
+- El inventario debe reflejar datos de la consulta origen con un modelo consistente.
+- La configuracion de notificaciones y reportes debe vivir en Dataverse y en la app, no en HTML ni en parametros ocultos.
+- La solucion debe ser importable, mantenible y operable como conjunto: tablas, vistas, formularios, app y flujos.
+- Los modos de reporte deben ser comprensibles por negocio y trazables tecnicamente.
+
+## Estructura documental
+
 - `docs/01_resumen_funcional.md`
-- `docs/02_despliegue_configuracion.md`
-- `docs/03_operacion_soporte.md`
-- `docs/04_troubleshooting_importacion.md`
+- `docs/02_arquitectura_funcional_y_tecnica.md`
+- `docs/03_modelo_datos_y_gobierno.md`
+- `docs/04_automatizacion_y_flujos.md`
+- `docs/05_app_model_driven_y_experiencia_usuario.md`
+- `docs/06_seguridad_operacion_y_soporte.md`
+- `docs/07_despliegue_y_release_management.md`
+- `docs/08_troubleshooting_y_lecciones_aprendidas.md`
+
+## Anexos tecnicos
+
 - `anexos/01_diccionario_campos.csv`
 - `anexos/02_expresiones_flujo.txt`
 - `anexos/03_fetchxml_vistas.xml`
 - `anexos/04_matriz_roles_permisos.csv`
 - `anexos/05_checklist_go_live.md`
 
-## Configuración de reportes por usuario
-La personalización de reportes está en la app/model-driven (tabla), no en HTML.
+## Paquetes de solucion
 
-Tabla: `kyn_suscripcionesdeinformes`
-- `kyn_name`
-- `kyn_recipientemail`
-- `kyn_reportmodecode` (Choice)
-- `kyn_reportmode` (legacy, opcional fallback)
-
-## Modos de reporte
-- `148250000`: Complete report (all agents)
-- `148250001`: Created agents only
-- `148250002`: Created by users (exclude system)
-- `148250003`: Changes only since last run
-- `148250004`: Do not send report
-
-## Recomendación de importación
-1. Importar en entorno de validación.
-2. Publicar personalizaciones.
-3. Ejecutar flujo manual.
-4. Validar suscripciones (caso envía / no envía).
+El repositorio contiene los paquetes de solucion disponibles en este estado de trabajo. La documentacion es aplicable a la linea funcional actual de la solucion y debe acompañar al paquete promovido a cada entorno.
