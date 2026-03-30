@@ -1,0 +1,94 @@
+<fetchSamples>
+  <sample entity="kyn_agenttenantwide" savedqueryid="{3842ee85-c85a-4f01-854a-96122471813a}" name="Active agent tenant wides">
+    <![CDATA[<fetch version="1.0" mapping="logical">
+                <entity name="kyn_agenttenantwide">
+                  <attribute name="kyn_agenttenantwideid" />
+                  <attribute name="kyn_name" />
+                  <attribute name="createdon" />
+                  <order attribute="kyn_name" descending="false" />
+                </entity>
+              </fetch>]]>
+  </sample>
+  <sample entity="kyn_agenttenantwide" savedqueryid="{9df021dc-d37c-49e4-a2a4-64ce0b61eb61}" name="agent tenant wide Associated View">
+    <![CDATA[<fetch version="1.0" mapping="logical">
+                <entity name="kyn_agenttenantwide">
+                  <attribute name="kyn_agenttenantwideid" />
+                  <attribute name="kyn_name" />
+                  <attribute name="createdon" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                  </filter>
+                </entity>
+              </fetch>]]>
+  </sample>
+  <sample entity="kyn_agenttenantwide" savedqueryid="{77b892df-8024-f111-88b3-7ced8d76c33a}" name="Created this week">
+    <![CDATA[<fetch version="1.0" mapping="logical" distinct="true">
+                <entity name="kyn_agenttenantwide">
+                  <attribute name="kyn_name" />
+                  <attribute name="kyn_authenticationjson" />
+                  <attribute name="kyn_createdat" />
+                  <attribute name="kyn_createdby" />
+                  <attribute name="kyn_createdin" />
+                  <attribute name="kyn_lastpublishedat" />
+                  <attribute name="kyn_location" />
+                  <attribute name="kyn_modeljson" />
+                  <attribute name="kyn_orchestrationjson" />
+                  <order attribute="kyn_createdat" descending="true" />
+                  <attribute name="kyn_owneremail" />
+                  <attribute name="kyn_agenttenantwideid" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="1" />
+                    <condition attribute="modifiedon" operator="this-week" />
+                  </filter>
+                </entity>
+              </fetch>]]>
+  </sample>
+  <sample entity="kyn_suscripcionesdeinformes" savedqueryid="{d8987dbb-0da7-4d90-b159-eccf25ce81be}" name="Quick Find Active agent tenant wides">
+    <![CDATA[<fetch version="1.0" mapping="logical">
+                <entity name="kyn_suscripcionesdeinformes">
+                  <attribute name="kyn_suscripcionesdeinformesid" />
+                  <attribute name="kyn_name" />
+                  <attribute name="kyn_recipientemail" />
+                  <attribute name="kyn_reportmodecode" />
+                  <attribute name="createdon" />
+                  <order attribute="kyn_name" descending="false" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                  </filter>
+                  <filter type="or" isquickfindfields="1">
+                    <condition attribute="kyn_name" operator="like" value="{0}" />
+                  </filter>
+                </entity>
+              </fetch>]]>
+  </sample>
+  <sample entity="kyn_suscripcionesdeinformes" savedqueryid="{057d185d-242c-f111-88b3-70a8a53b5523}" name="Mis Suscripciones de informes">
+    <![CDATA[<fetch version="1.0" mapping="logical">
+                <entity name="kyn_suscripcionesdeinformes">
+                  <attribute name="kyn_suscripcionesdeinformesid" />
+                  <attribute name="kyn_name" />
+                  <attribute name="kyn_recipientemail" />
+                  <attribute name="kyn_reportmodecode" />
+                  <attribute name="createdon" />
+                  <order attribute="kyn_name" descending="false" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                  </filter>
+                </entity>
+              </fetch>]]>
+  </sample>
+  <sample entity="kyn_suscripcionesdeinformes" savedqueryid="{746f4bdf-3578-4ced-9ce8-7b732cfab4ce}" name="Suscripciones de informes inactivo">
+    <![CDATA[<fetch version="1.0" mapping="logical">
+                <entity name="kyn_suscripcionesdeinformes">
+                  <attribute name="kyn_suscripcionesdeinformesid" />
+                  <attribute name="kyn_name" />
+                  <attribute name="kyn_recipientemail" />
+                  <attribute name="kyn_reportmodecode" />
+                  <attribute name="createdon" />
+                  <order attribute="kyn_name" descending="false" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                  </filter>
+                </entity>
+              </fetch>]]>
+  </sample>
+</fetchSamples>

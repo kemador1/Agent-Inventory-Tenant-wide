@@ -1,53 +1,42 @@
-# Documentación del producto
+# Agent Inventory Tenant-wide
 
-Esta carpeta contiene la documentación funcional, técnica y operativa alineada con la release candidate `2.2.0.2` de `kynagentinventorytenantwide`.
+Repositorio de release para la solución de Power Platform **Agent Inventory Tenant-wide**.
 
-## Navegación
+## Versión publicada
+- **Paquete managed:** `kynagentinventorytenantwide_2_7_0_7_managed.zip`
+- **Tipo:** Managed
+- **Objetivo:** Inventario tenant-wide de agentes y envío de reportes configurables por usuario desde la app model-driven.
 
-- [01_vision_producto.md](01_vision_producto.md)
-- [02_arquitectura_funcional_y_tecnica.md](02_arquitectura_funcional_y_tecnica.md)
-- [03_modelo_datos.md](03_modelo_datos.md)
-- [04_flujo_inventario_y_automatizacion.md](04_flujo_inventario_y_automatizacion.md)
-- [05_app_dashboards_reportes.md](05_app_dashboards_reportes.md)
-- [06_seguridad_roles_y_gobierno.md](06_seguridad_roles_y_gobierno.md)
-- [07_manual_usuario_final.md](07_manual_usuario_final.md)
-- [08_manual_despliegue_y_configuracion.md](08_manual_despliegue_y_configuracion.md)
-- [09_manual_operacion_y_mantenimiento.md](09_manual_operacion_y_mantenimiento.md)
-- [10_riesgos_limitaciones_y_proximos_pasos.md](10_riesgos_limitaciones_y_proximos_pasos.md)
-- [11_bienvenida_power_platform.html](11_bienvenida_power_platform.html)
-- [anexos/01_diccionario_campos.md](anexos/01_diccionario_campos.md)
-- [anexos/02_variables_y_expresiones_del_flujo.md](anexos/02_variables_y_expresiones_del_flujo.md)
-- [anexos/03_matriz_de_permisos.md](anexos/03_matriz_de_permisos.md)
-- [anexos/04_iconografia_dinamica_en_formulario.md](anexos/04_iconografia_dinamica_en_formulario.md)
+## Contenido del repositorio
+- `kynagentinventorytenantwide_2_7_0_7_managed.zip`
+- `docs/01_resumen_funcional.md`
+- `docs/02_despliegue_configuracion.md`
+- `docs/03_operacion_soporte.md`
+- `docs/04_troubleshooting_importacion.md`
+- `anexos/01_diccionario_campos.csv`
+- `anexos/02_expresiones_flujo.txt`
+- `anexos/03_fetchxml_vistas.xml`
+- `anexos/04_matriz_roles_permisos.csv`
+- `anexos/05_checklist_go_live.md`
 
-## Resumen ejecutivo
+## Configuración de reportes por usuario
+La personalización de reportes está en la app/model-driven (tabla), no en HTML.
 
-`KYN Agent Inventory Tenant-wide` es una solución de Power Platform para inventariar agentes a nivel tenant, consolidarlos en Dataverse y ofrecer una capa de operación, consulta y gobierno con reporting reutilizable.
+Tabla: `kyn_suscripcionesdeinformes`
+- `kyn_name`
+- `kyn_recipientemail`
+- `kyn_reportmodecode` (Choice)
+- `kyn_reportmode` (legacy, opcional fallback)
 
-La `2.2.0.2` incorpora:
+## Modos de reporte
+- `148250000`: Complete report (all agents)
+- `148250001`: Created agents only
+- `148250002`: Created by users (exclude system)
+- `148250003`: Changes only since last run
+- `148250004`: Do not send report
 
-- tabla `kyn_agenttenantwide`;
-- flujo principal de inventario;
-- app model-driven;
-- dashboards;
-- reporte clásico ligado a la tabla;
-- variables de entorno de correo y branding;
-- recursos web HTML, JS y SVG para experiencia visual.
-
-## Comportamiento operativo documentado
-
-- si el agente se detecta en la ejecución actual, queda activo;
-- si no se detecta, queda inactivo;
-- si reaparece, vuelve a activo;
-- no se ejecuta borrado físico automático;
-- el correo informa en español y detalla cambios materiales.
-
-## Alcance real
-
-- descubrimiento: `microsoft.copilotstudio/agents`;
-- persistencia: Dataverse;
-- explotación: app, dashboards, reporte clásico y correo operativo.
-
-## Fuera de alcance
-
-- administración del origen desde esta solución.
+## Recomendación de importación
+1. Importar en entorno de validación.
+2. Publicar personalizaciones.
+3. Ejecutar flujo manual.
+4. Validar suscripciones (caso envía / no envía).
