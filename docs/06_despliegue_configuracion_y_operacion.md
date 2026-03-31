@@ -6,9 +6,9 @@ En este repositorio la fuente principal es la solución descomprimida en raíz.
 
 Archivos principales:
 
-- [solution.xml](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/solution.xml)
-- [customizations.xml](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/customizations.xml)
-- [Workflows/KYNAgentInventorytenant-wide-612266CD-F828-F111-8341-7CED8D488E89.json](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/Workflows/KYNAgentInventorytenant-wide-612266CD-F828-F111-8341-7CED8D488E89.json)
+- [solution.xml](../solution.xml)
+- [customizations.xml](../customizations.xml)
+- [Workflows/KYNAgentInventorytenant-wide-612266CD-F828-F111-8341-7CED8D488E89.json](../Workflows/KYNAgentInventorytenant-wide-612266CD-F828-F111-8341-7CED8D488E89.json)
 
 ## Dependencias a validar
 
