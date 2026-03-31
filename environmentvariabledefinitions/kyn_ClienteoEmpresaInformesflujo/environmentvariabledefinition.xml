@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="kyn_ClienteoEmpresaInformesflujo">
+  <defaultvalue>Kyndryl</defaultvalue>
+  <description default="Nombre de la empresa o cliente que se mostrará en el asunto, cabecera y pie de los correos del informe del flujo.">
+    <label description="Nombre de la empresa o cliente que se mostrará en el asunto, cabecera y pie de los correos del informe del flujo." languagecode="3082" />
+  </description>
+  <displayname default="Cliente o empresa informes flujo">
+    <label description="Cliente o empresa informes flujo" languagecode="3082" />
+  </displayname>
+  <introducedversion>2.2.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

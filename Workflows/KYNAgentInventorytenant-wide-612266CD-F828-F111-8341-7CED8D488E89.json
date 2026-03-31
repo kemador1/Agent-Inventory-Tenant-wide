@@ -1,0 +1,1370 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_powerplatformadminv2": {
+        "api": {
+          "name": "shared_powerplatformadminv2"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "kyn_ConnectionReferencePowerPlatformAdminsTenantwide"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "kyn_ConnectionReferenceDataverseTenantwide"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365users_2": {
+        "api": {
+          "name": "shared_office365users"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "kyn_sharedoffice365users_f32b7"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365_1": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "kyn_ConnectionReferenceAgentInventoryTenantwide"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "Cliente o empresa informes flujo (kyn_ClienteoEmpresaInformesflujo)": {
+          "defaultValue": "Kyndryl",
+          "type": "String",
+          "metadata": {
+            "schemaName": "kyn_ClienteoEmpresaInformesflujo",
+            "description": "Nombre de la empresa o cliente que se mostrará en el asunto, cabecera y pie de los correos del informe del flujo."
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "timeZone": "Romance Standard Time",
+            "schedule": {
+              "weekDays": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+              ],
+              "hours": [
+                "7"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "ed5ebaf7-5756-4648-8183-838c50a49ad1"
+          }
+        }
+      },
+      "actions": {
+        "Init_varSkipToken": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varSkipToken",
+                "type": "string",
+                "value": "START"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varCreatedNonSystemHtml": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "feee9a5d-98a9-4b25-91d6-2b5da6b4bd6c"
+          }
+        },
+        "Init_varCreated": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCreated",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varSkipToken": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "448cde57-ed52-4095-899e-d6d8e5e638d1"
+          }
+        },
+        "Init_varUpdated": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varUpdated",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varCreated": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fa2bde6e-ab88-44f9-84e1-19ca2ecb8277"
+          }
+        },
+        "Init_varDeleted": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varMarkedMissing",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varUpdated": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2bea4b51-2918-48ae-8a00-f2290dfb44a2"
+          }
+        },
+        "Init_varProcessedAgents": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varProcessedAgents",
+                "type": "array",
+                "value": []
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varDeleted": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "593c4483-8b38-42a6-8145-d9338f5086d4"
+          }
+        },
+        "Init_varErrors": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varErrors",
+                "type": "array",
+                "value": []
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varProcessedAgents": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "61822cda-f8ee-4e02-a96f-fee7dcb8934d"
+          }
+        },
+        "Init_varRunStartTime": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varRunStartTime",
+                "type": "string",
+                "value": "@utcNow()"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varErrors": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "88cf80f2-0741-44c2-a0b2-b28d42f6973e"
+          }
+        },
+        "SCOPE_Discover_And_Upsert": {
+          "type": "Scope",
+          "actions": {
+            "Do_Until_All_Pages": {
+              "type": "Until",
+              "expression": "@equals(variables('varSkipToken'), '')",
+              "limit": {
+                "count": 120,
+                "timeout": "PT2H"
+              },
+              "actions": {
+                "Query_Power_Platform_Resources": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "api-version": "2022-03-01-preview",
+                      "body/TableName": "PowerPlatformResources",
+                      "body/Clauses": [
+                        {
+                          "$type": "where",
+                          "FieldName": "type",
+                          "Operator": "in~",
+                          "Values": [
+                            "'microsoft.copilotstudio/agents'"
+                          ]
+                        },
+                        {
+                          "$type": "project",
+                          "FieldList": [
+                            "resourceId = tostring(id)",
+                            "location = tostring(location)",
+                            "agentId = tostring(name)",
+                            "tenantId = tostring(tenantId)",
+                            "resourceType = tostring(type)",
+                            "environmentId = tostring(properties.environmentId)",
+                            "displayName = tostring(properties.displayName)",
+                            "createdAt = tostring(properties.createdAt)",
+                            "createdBy = tostring(properties.createdBy)",
+                            "ownerId = tostring(properties.ownerId)",
+                            "isQuarantined = tobool(properties.isQuarantined)",
+                            "lastPublishedAt = tostring(properties.lastPublishedAt)",
+                            "createdIn = tostring(properties.createdIn)",
+                            "schemaName = tostring(properties.schemaName)",
+                            "entraAppId = tostring(properties.entraAppId)",
+                            "orchestrationJson = tostring(properties.orchestration)",
+                            "authenticationJson = tostring(properties.authentication)",
+                            "modelJson = tostring(properties.model)"
+                          ]
+                        }
+                      ],
+                      "body/Options/Top": 1000,
+                      "body/Options/SkipToken": "@if(equals(variables('varSkipToken'), 'START'), '', variables('varSkipToken'))"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_powerplatformadminv2",
+                      "operationId": "QueryResources",
+                      "connectionName": "shared_powerplatformadminv2"
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "c7898ae2-35d6-46ea-aadf-bb6345dcf5ef"
+                  }
+                },
+                "Set_varSkipToken_NextPage": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varSkipToken",
+                    "value": "@{coalesce(body('Query_Power_Platform_Resources')?['skipToken'], '')}"
+                  },
+                  "runAfter": {
+                    "Total_Records_in_this_query": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "d1e5f99a-3ca3-4823-a926-a423140c8216"
+                  }
+                },
+                "Apply_to_each_Agent": {
+                  "type": "Foreach",
+                  "foreach": "@coalesce(body('Query_Power_Platform_Resources')?['data'], createArray())",
+                  "actions": {
+                    "Scope_Process_Agent": {
+                      "type": "Scope",
+                      "actions": {
+                        "List_Existing_By_Agent_And_Environment": {
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "parameters": {
+                              "entityName": "kyn_agenttenantwides",
+                              "$select": "kyn_agenttenantwideid,kyn_displayname,kyn_createdby,kyn_ownerid,kyn_location,kyn_createdin,kyn_schemaname,kyn_entraappid,kyn_modelprovider,kyn_activityindicator,kyn_isquarantined,kyn_resourceid,kyn_resourcetype,kyn_tenantid,kyn_environmentid,kyn_lastsyncstatus,kyn_missingcounter",
+                              "$filter": "kyn_agentid eq '@{coalesce(items('Apply_to_each_Agent')?['agentId'], '')}' and kyn_environmentid eq '@{coalesce(items('Apply_to_each_Agent')?['environmentId'], '')}'",
+                              "$top": 1
+                            },
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                              "operationId": "ListRecords",
+                              "connectionName": "shared_commondataserviceforapps_1"
+                            }
+                          },
+                          "runAfter": {
+                            "Compose_ActivityIndicator": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "5d736ed2-70d7-40de-9910-cb91abc6782c"
+                          }
+                        },
+                        "Condition_Record_Exists": {
+                          "type": "If",
+                          "expression": "@greater(length(coalesce(body('List_Existing_By_Agent_And_Environment')?['value'], createArray())), 0)",
+                          "actions": {
+                            "Compose_Existing_Record": {
+                              "type": "Compose",
+                              "inputs": "@first(body('List_Existing_By_Agent_And_Environment')?['value'])",
+                              "metadata": {
+                                "operationMetadataId": "6fd6b8fe-d6ad-4987-b763-6d32cedcf3dd"
+                              }
+                            },
+                            "Condition_Has_Changes": {
+                              "type": "If",
+                              "expression": {
+                                "or": [
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_displayname'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['displayName'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_createdby'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['createdBy'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_ownerid'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['ownerId'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_location'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['location'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_createdin'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['createdIn'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_schemaname'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['schemaName'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_entraappid'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['entraAppId'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_isquarantined'], '')",
+                                        "@if(equals(coalesce(items('Apply_to_each_Agent')?['isQuarantined'], false), true), '1', '0')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_resourceid'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['resourceId'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_resourcetype'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['resourceType'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_tenantid'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['tenantId'], '')"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "equals": [
+                                        "@coalesce(outputs('Compose_Existing_Record')?['kyn_environmentid'], '')",
+                                        "@coalesce(items('Apply_to_each_Agent')?['environmentId'], '')"
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              "actions": {
+                                "Update_Agent_Record": {
+                                  "type": "OpenApiConnection",
+                                  "inputs": {
+                                    "parameters": {
+                                      "entityName": "kyn_agenttenantwides",
+                                      "recordId": "@outputs('Compose_Existing_Record')?['kyn_agenttenantwideid']",
+                                      "item/kyn_name": "@coalesce(items('Apply_to_each_Agent')?['displayName'], '')",
+                                      "item/kyn_activityindicator": "@outputs('Compose_ActivityIndicator')",
+                                      "item/kyn_authenticationjson": "@coalesce(items('Apply_to_each_Agent')?['authenticationJson'], '')",
+                                      "item/kyn_cleanupdecision": "SeenInCurrentRun",
+                                      "item/kyn_createdat": "@if(empty(items('Apply_to_each_Agent')?['createdAt']), null, items('Apply_to_each_Agent')?['createdAt'])",
+                                      "item/kyn_createdby": "@coalesce(items('Apply_to_each_Agent')?['createdBy'], '')",
+                                      "item/kyn_createdbydisplay": "@variables('varCreatedByDisplay')",
+                                      "item/kyn_createdin": "@coalesce(items('Apply_to_each_Agent')?['createdIn'], '')",
+                                      "item/kyn_creatoremail": "@variables('varCreatedByEmail')",
+                                      "item/kyn_displayname": "@coalesce(items('Apply_to_each_Agent')?['displayName'], '')",
+                                      "item/kyn_entraappid": "@coalesce(items('Apply_to_each_Agent')?['entraAppId'], '')",
+                                      "item/kyn_environmentid": "@coalesce(items('Apply_to_each_Agent')?['environmentId'], '')",
+                                      "item/kyn_isquarantined": "@if(equals(coalesce(items('Apply_to_each_Agent')?['isQuarantined'], false), true), '1', '0')",
+                                      "item/kyn_lastpublishedat": "@if(empty(items('Apply_to_each_Agent')?['lastPublishedAt']), null, items('Apply_to_each_Agent')?['lastPublishedAt'])",
+                                      "item/kyn_lastseenon": "@utcNow()",
+                                      "item/kyn_lastsyncstatus": "SeenInCurrentRun",
+                                      "item/kyn_location": "@coalesce(items('Apply_to_each_Agent')?['location'], '')",
+                                      "item/kyn_missingcounter": 0,
+                                      "item/kyn_modeljson": "@coalesce(items('Apply_to_each_Agent')?['modelJson'], '')",
+                                      "item/kyn_orchestrationjson": "@coalesce(items('Apply_to_each_Agent')?['orchestrationJson'], '')",
+                                      "item/kyn_ownerdisplay": "@variables('varOwnerIdDisplay')",
+                                      "item/kyn_owneremail": "@variables('varOwnerIdEmail')",
+                                      "item/kyn_ownerid": "@coalesce(items('Apply_to_each_Agent')?['ownerId'], '')",
+                                      "item/kyn_resourceid": "@coalesce(items('Apply_to_each_Agent')?['resourceId'], '')",
+                                      "item/kyn_resourcetype": "@coalesce(items('Apply_to_each_Agent')?['resourceType'], '')",
+                                      "item/kyn_schemaname": "@coalesce(items('Apply_to_each_Agent')?['schemaName'], '')",
+                                      "item/statecode": 0,
+                                      "item/statuscode": 1,
+                                      "item/kyn_tenantid": "@coalesce(items('Apply_to_each_Agent')?['tenantId'], '')"
+                                    },
+                                    "host": {
+                                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                      "operationId": "UpdateRecord",
+                                      "connectionName": "shared_commondataserviceforapps_1"
+                                    }
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "6d667383-49da-49c6-b4f0-6abe8922d7dd"
+                                  }
+                                },
+                                "Increment_varUpdated": {
+                                  "type": "IncrementVariable",
+                                  "inputs": {
+                                    "name": "varUpdated",
+                                    "value": 1
+                                  },
+                                  "runAfter": {
+                                    "Update_Agent_Record": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "62e7d746-2882-47e7-a67d-c301a42c00f2"
+                                  }
+                                },
+                                "Append_Change_Summary": {
+                                  "type": "AppendToStringVariable",
+                                  "inputs": {
+                                    "name": "varDebugLog",
+                                    "value": "@concat('<li><strong>', coalesce(items('Apply_to_each_Agent')?['displayName'], items('Apply_to_each_Agent')?['agentId'], 'SIN_NOMBRE'), '</strong><br/>', if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_displayname'], ''), coalesce(items('Apply_to_each_Agent')?['displayName'], ''))), '<strong>displayName</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_createdby'], ''), coalesce(items('Apply_to_each_Agent')?['createdBy'], ''))), '<strong>createdBy</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_ownerid'], ''), coalesce(items('Apply_to_each_Agent')?['ownerId'], ''))), '<strong>ownerId</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_location'], ''), coalesce(items('Apply_to_each_Agent')?['location'], ''))), '<strong>location</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_createdin'], ''), coalesce(items('Apply_to_each_Agent')?['createdIn'], ''))), '<strong>createdIn</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_schemaname'], ''), coalesce(items('Apply_to_each_Agent')?['schemaName'], ''))), '<strong>schemaName</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_entraappid'], ''), coalesce(items('Apply_to_each_Agent')?['entraAppId'], ''))), '<strong>entraAppId</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_isquarantined'], ''), if(equals(coalesce(items('Apply_to_each_Agent')?['isQuarantined'], false), true), '1', '0'))), '<strong>isQuarantined</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_resourceid'], ''), coalesce(items('Apply_to_each_Agent')?['resourceId'], ''))), '<strong>resourceId</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_resourcetype'], ''), coalesce(items('Apply_to_each_Agent')?['resourceType'], ''))), '<strong>resourceType</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_tenantid'], ''), coalesce(items('Apply_to_each_Agent')?['tenantId'], ''))), '<strong>tenantId</strong><br/>', ''), if(not(equals(coalesce(outputs('Compose_Existing_Record')?['kyn_environmentid'], ''), coalesce(items('Apply_to_each_Agent')?['environmentId'], ''))), '<strong>environmentId</strong><br/>', ''), '</li>')"
+                                  },
+                                  "runAfter": {
+                                    "Increment_varUpdated": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "af69a7fd-f09a-43e3-a1bb-c965739f222e"
+                                  }
+                                }
+                              },
+                              "else": {
+                                "actions": {
+                                  "Refresh_Seen_Metadata": {
+                                    "type": "OpenApiConnection",
+                                    "inputs": {
+                                      "parameters": {
+                                        "entityName": "kyn_agenttenantwides",
+                                        "recordId": "@outputs('Compose_Existing_Record')?['kyn_agenttenantwideid']",
+                                        "item/kyn_cleanupdecision": "SeenInCurrentRun",
+                                        "item/kyn_lastseenon": "@utcNow()",
+                                        "item/kyn_lastsyncstatus": "SeenInCurrentRun",
+                                        "item/kyn_missingcounter": 0
+                                      },
+                                      "host": {
+                                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                        "operationId": "UpdateRecord",
+                                        "connectionName": "shared_commondataserviceforapps_1"
+                                      }
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "8acc6ad1-3417-40b7-8844-b58936a470d3"
+                                    }
+                                  }
+                                }
+                              },
+                              "runAfter": {
+                                "Compose_Existing_Record": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "e7338040-d469-4b75-b490-71e608840c5c"
+                              }
+                            }
+                          },
+                          "else": {
+                            "actions": {
+                              "Increment_varCreated": {
+                                "type": "IncrementVariable",
+                                "inputs": {
+                                  "name": "varCreated",
+                                  "value": 1
+                                },
+                                "runAfter": {
+                                  "Create_Agent_Record": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "12d221d9-1ec0-4c3c-bd4c-2ade80766d52"
+                                }
+                              },
+                              "Create_Agent_Record": {
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "parameters": {
+                                    "entityName": "kyn_agenttenantwides",
+                                    "item/kyn_name": "@coalesce(items('Apply_to_each_Agent')?['displayName'], '')",
+                                    "item/kyn_activityindicator": "@outputs('Compose_ActivityIndicator')",
+                                    "item/kyn_agentid": "@coalesce(items('Apply_to_each_Agent')?['agentId'], '')",
+                                    "item/kyn_authenticationjson": "@coalesce(items('Apply_to_each_Agent')?['authenticationJson'], '')",
+                                    "item/kyn_cleanupdecision": "SeenInCurrentRun",
+                                    "item/kyn_createdat": "@if(empty(items('Apply_to_each_Agent')?['createdAt']), null, items('Apply_to_each_Agent')?['createdAt'])",
+                                    "item/kyn_createdby": "@coalesce(items('Apply_to_each_Agent')?['createdBy'], '')",
+                                    "item/kyn_createdbydisplay": "@variables('varCreatedByDisplay')",
+                                    "item/kyn_createdin": "@coalesce(items('Apply_to_each_Agent')?['createdIn'], '')",
+                                    "item/kyn_creatoremail": "@variables('varCreatedByEmail')",
+                                    "item/kyn_displayname": "@coalesce(items('Apply_to_each_Agent')?['displayName'], '')",
+                                    "item/kyn_entraappid": "@coalesce(items('Apply_to_each_Agent')?['entraAppId'], '')",
+                                    "item/kyn_environmentid": "@coalesce(items('Apply_to_each_Agent')?['environmentId'], '')",
+                                    "item/kyn_isquarantined": "@if(equals(coalesce(items('Apply_to_each_Agent')?['isQuarantined'], false), true), '1', '0')",
+                                    "item/kyn_lastpublishedat": "@if(empty(items('Apply_to_each_Agent')?['lastPublishedAt']), null, items('Apply_to_each_Agent')?['lastPublishedAt'])",
+                                    "item/kyn_lastseenon": "@utcNow()",
+                                    "item/kyn_lastsyncstatus": "SeenInCurrentRun",
+                                    "item/kyn_location": "@coalesce(items('Apply_to_each_Agent')?['location'], '')",
+                                    "item/kyn_missingcounter": 0,
+                                    "item/kyn_modeljson": "@coalesce(items('Apply_to_each_Agent')?['modelJson'], '')",
+                                    "item/kyn_orchestrationjson": "@coalesce(items('Apply_to_each_Agent')?['orchestrationJson'], '')",
+                                    "item/kyn_ownerdisplay": "@variables('varOwnerIdDisplay')",
+                                    "item/kyn_owneremail": "@variables('varOwnerIdEmail')",
+                                    "item/kyn_ownerid": "@coalesce(items('Apply_to_each_Agent')?['ownerId'], '')",
+                                    "item/kyn_resourceid": "@coalesce(items('Apply_to_each_Agent')?['resourceId'], '')",
+                                    "item/kyn_resourcetype": "@coalesce(items('Apply_to_each_Agent')?['resourceType'], '')",
+                                    "item/kyn_schemaname": "@coalesce(items('Apply_to_each_Agent')?['schemaName'], '')",
+                                    "item/statuscode": 1,
+                                    "item/kyn_tenantid": "@coalesce(items('Apply_to_each_Agent')?['tenantId'], '')"
+                                  },
+                                  "host": {
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                    "operationId": "CreateRecord",
+                                    "connectionName": "shared_commondataserviceforapps_1"
+                                  }
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "e49be35b-fb3c-4871-b666-d9fd3b1e037e"
+                                }
+                              },
+                              "Append_Created_Agent": {
+                                "type": "AppendToStringVariable",
+                                "inputs": {
+                                  "name": "varCreatedAgentsHtml",
+                                  "value": "@concat('<li><strong>', coalesce(items('Apply_to_each_Agent')?['displayName'], items('Apply_to_each_Agent')?['agentId'], 'SIN_NOMBRE'), '</strong> · CreatedBy: ', coalesce(variables('varCreatedByDisplay'), items('Apply_to_each_Agent')?['createdBy'], 'N/A'), '</li>')"
+                                },
+                                "runAfter": {
+                                  "Increment_varCreated": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "f577ef91-59aa-4ddd-8a9a-6f9dbf4f6f2e"
+                                }
+                              },
+                              "Append_Created_NonSystem": {
+                                "type": "AppendToStringVariable",
+                                "inputs": {
+                                  "name": "varCreatedNonSystemHtml",
+                                  "value": "@if(or(equals(coalesce(items('Apply_to_each_Agent')?['createdBy'], ''), ''), equals(coalesce(items('Apply_to_each_Agent')?['createdBy'], ''), '00000000-0000-0000-0000-000000000000')), '', concat('<li><strong>', coalesce(items('Apply_to_each_Agent')?['displayName'], items('Apply_to_each_Agent')?['agentId'], 'SIN_NOMBRE'), '</strong> · CreatedBy: ', coalesce(variables('varCreatedByDisplay'), items('Apply_to_each_Agent')?['createdBy'], 'N/A'), '</li>'))"
+                                },
+                                "runAfter": {
+                                  "Append_Created_Agent": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "f6ea9464-c9fd-4e19-a6de-feb57f8b5530"
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "List_Existing_By_Agent_And_Environment": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "5e62ab5b-d691-4c52-bfcb-a9c29785c578"
+                          }
+                        },
+                        "Compose_ActivityIndicator": {
+                          "type": "Compose",
+                          "inputs": "@if(equals(coalesce(items('Apply_to_each_Agent')?['isQuarantined'], false), true), 'Quarantined', if(empty(items('Apply_to_each_Agent')?['lastPublishedAt']), 'Not Published', 'Published'))",
+                          "runAfter": {
+                            "Condition__if_Owner_is_0000": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "28f69718-a004-4bc5-8228-99968a28864a"
+                          }
+                        },
+                        "Get_User_Profile_CreatedBy": {
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "parameters": {
+                              "id": "@coalesce(items('Apply_to_each_Agent')?['createdBy'], '')",
+                              "$select": "displayName,userPrincipalName,mail,id"
+                            },
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+                              "operationId": "UserProfile_V2",
+                              "connectionName": "shared_office365users_2"
+                            }
+                          },
+                          "metadata": {
+                            "operationMetadataId": "8589b3ac-5ec5-4703-8dda-ad97e07155ce"
+                          }
+                        },
+                        "Get_User_Profile_Owner": {
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "parameters": {
+                              "id": "@coalesce(items('Apply_to_each_Agent')?['ownerId'], '')",
+                              "$select": "displayName,userPrincipalName,mail,id"
+                            },
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+                              "operationId": "UserProfile_V2",
+                              "connectionName": "shared_office365users_2"
+                            }
+                          },
+                          "runAfter": {
+                            "Condition__if_Created_By_is_00000": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "8589b3ac-5ec5-4703-8dda-ad97e07155ce"
+                          }
+                        },
+                        "Condition__if_Created_By_is_00000": {
+                          "type": "If",
+                          "expression": {
+                            "or": [
+                              {
+                                "equals": [
+                                  "@coalesce(items('Apply_to_each_Agent')?['createdBy'], '')",
+                                  "00000000-0000-0000-0000-000000000000"
+                                ]
+                              },
+                              {
+                                "equals": [
+                                  "@coalesce(items('Apply_to_each_Agent')?['createdBy'], '')",
+                                  ""
+                                ]
+                              }
+                            ]
+                          },
+                          "actions": {
+                            "Set_varCreatedByDisplay_Default__as_a_System": {
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "varCreatedByDisplay",
+                                "value": "System or 0000 or Null"
+                              },
+                              "metadata": {
+                                "operationMetadataId": "86aa93fd-ccde-44d8-8222-328e8f36d10c"
+                              }
+                            },
+                            "Set_varCreatedByEmail_Default__as_a_System": {
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "varCreatedByEmail",
+                                "value": "System or 0000 or Null"
+                              },
+                              "runAfter": {
+                                "Set_varCreatedByDisplay_Default__as_a_System": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "1db03801-ced3-465e-b862-48fa1311e710"
+                              }
+                            }
+                          },
+                          "else": {
+                            "actions": {
+                              "Set_varCreatedByDisplay_Default": {
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "varCreatedByDisplay",
+                                  "value": "@coalesce(outputs('Get_User_Profile_CreatedBy')?['body/displayName'], outputs('Get_User_Profile_CreatedBy')?['body/userPrincipalName'], items('Apply_to_each_Agent')?['createdBy'])"
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "86aa93fd-ccde-44d8-8222-328e8f36d10c"
+                                }
+                              },
+                              "Set_varCreatedByEmail_Default": {
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "varCreatedByEmail",
+                                  "value": "@coalesce(outputs('Get_User_Profile_CreatedBy')?['body/mail'], outputs('Get_User_Profile_CreatedBy')?['body/userPrincipalName'], if(contains(coalesce(items('Apply_to_each_Agent')?['createdBy'], ''), '@'), items('Apply_to_each_Agent')?['createdBy'], ''))"
+                                },
+                                "runAfter": {
+                                  "Set_varCreatedByDisplay_Default": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "1db03801-ced3-465e-b862-48fa1311e710"
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "Get_User_Profile_CreatedBy": [
+                              "Succeeded",
+                              "Failed",
+                              "Skipped"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "634449e7-e4ee-4cae-84c6-1584127dbab7"
+                          }
+                        },
+                        "Condition__if_Owner_is_0000": {
+                          "type": "If",
+                          "expression": {
+                            "or": [
+                              {
+                                "equals": [
+                                  "@coalesce(items('Apply_to_each_Agent')?['ownerId'], '')",
+                                  "00000000-0000-0000-0000-000000000000"
+                                ]
+                              },
+                              {
+                                "equals": [
+                                  "@coalesce(items('Apply_to_each_Agent')?['ownerId'], '')",
+                                  ""
+                                ]
+                              }
+                            ]
+                          },
+                          "actions": {
+                            "Set_varOwnerIdDisplay_Default_as_a_system": {
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "varOwnerIdDisplay",
+                                "value": "System or 0000 or Null"
+                              },
+                              "metadata": {
+                                "operationMetadataId": "5c8a4f09-aff7-4821-9349-8f2824e71e99"
+                              }
+                            },
+                            "Set_varOwnerIdEmail_Default_as_a_system": {
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "varOwnerIdEmail",
+                                "value": "System or 0000 or Null"
+                              },
+                              "runAfter": {
+                                "Set_varOwnerIdDisplay_Default_as_a_system": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "deb74be4-f1e5-4239-9719-e042b6c2cf83"
+                              }
+                            }
+                          },
+                          "else": {
+                            "actions": {
+                              "Set_varOwnerIdDisplay_Default": {
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "varOwnerIdDisplay",
+                                  "value": "@coalesce(outputs('Get_User_Profile_Owner')?['body/displayName'], outputs('Get_User_Profile_Owner')?['body/userPrincipalName'], items('Apply_to_each_Agent')?['ownerId'])"
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "5c8a4f09-aff7-4821-9349-8f2824e71e99"
+                                }
+                              },
+                              "Set_varOwnerIdEmail_Default": {
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "varOwnerIdEmail",
+                                  "value": "@coalesce(outputs('Get_User_Profile_Owner')?['body/mail'], outputs('Get_User_Profile_Owner')?['body/userPrincipalName'], if(contains(coalesce(items('Apply_to_each_Agent')?['ownerId'], ''), '@'), items('Apply_to_each_Agent')?['ownerId'], ''))"
+                                },
+                                "runAfter": {
+                                  "Set_varOwnerIdDisplay_Default": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "deb74be4-f1e5-4239-9719-e042b6c2cf83"
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "Get_User_Profile_Owner": [
+                              "Succeeded",
+                              "Failed",
+                              "Skipped"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "9fb54021-c551-4de8-9bae-ad682ee24fcb"
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "64a12644-ec19-4334-a3cb-135a753a216b"
+                      }
+                    },
+                    "Append_ProcessedAgent": {
+                      "type": "AppendToArrayVariable",
+                      "inputs": {
+                        "name": "varProcessedAgents",
+                        "value": "@concat(coalesce(items('Apply_to_each_Agent')?['agentId'], ''), '|', coalesce(items('Apply_to_each_Agent')?['environmentId'], ''))"
+                      },
+                      "runAfter": {
+                        "Scope_Process_Agent": [
+                          "Succeeded",
+                          "Failed",
+                          "Skipped"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "1bbe583d-2376-4fa9-9598-8088f84bf95b"
+                      }
+                    },
+                    "Append_Error_If_Failed": {
+                      "type": "AppendToArrayVariable",
+                      "inputs": {
+                        "name": "varErrors",
+                        "value": "@concat(coalesce(items('Apply_to_each_Agent')?['agentId'], 'N/A'), ' | ', coalesce(items('Apply_to_each_Agent')?['displayName'], 'N/A'), ' | ', replace(replace(coalesce(result('Scope_Process_Agent')?['error']?['message'], 'Unknown'), '''', '-'), '\n', ' '))"
+                      },
+                      "runAfter": {
+                        "Scope_Process_Agent": [
+                          "Failed"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "394090ff-4830-4695-a10e-1dedacf4a7b2"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Set_varSkipToken_NextPage": [
+                      "Succeeded"
+                    ]
+                  },
+                  "runtimeConfiguration": {
+                    "concurrency": {
+                      "repetitions": 50
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e5312a09-0470-4993-b33c-b7fbf1d7838d"
+                  }
+                },
+                "Total_Records_in_this_query": {
+                  "type": "Compose",
+                  "inputs": "@outputs('Query_Power_Platform_Resources')?['body/totalRecords']",
+                  "runAfter": {
+                    "Query_Power_Platform_Resources": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "a695068c-8593-4aaa-b9a8-82bd8fb78d04"
+                  }
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "0357713a-cb9b-4739-b4e7-d00dab845425"
+              }
+            },
+            "Scope_Cleanup_Deleted": {
+              "type": "Scope",
+              "actions": {
+                "Condition_Has_Processed_Agents": {
+                  "type": "If",
+                  "expression": {
+                    "greater": [
+                      "@length(variables('varProcessedAgents'))",
+                      0
+                    ]
+                  },
+                  "actions": {
+                    "List_All_Agent_Records": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "entityName": "kyn_agenttenantwides",
+                          "$select": "kyn_agenttenantwideid,kyn_agentid,kyn_environmentid,kyn_displayname,kyn_missingcounter,kyn_lastsyncstatus",
+                          "$top": 5000
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "operationId": "ListRecords",
+                          "connectionName": "shared_commondataserviceforapps_1"
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "70e89215-1188-45b9-a085-57713cb27ff5"
+                      }
+                    },
+                    "Apply_to_each_Existing_Record": {
+                      "type": "Foreach",
+                      "foreach": "@coalesce(body('List_All_Agent_Records')?['value'], createArray())",
+                      "actions": {
+                        "Condition_Agent_Not_In_Tenant": {
+                          "type": "If",
+                          "expression": {
+                            "not": {
+                              "contains": [
+                                "@variables('varProcessedAgents')",
+                                "@concat(coalesce(items('Apply_to_each_Existing_Record')?['kyn_agentid'], ''), '|', coalesce(items('Apply_to_each_Existing_Record')?['kyn_environmentid'], ''))"
+                              ]
+                            }
+                          },
+                          "actions": {
+                            "Update_Stale_Record": {
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "parameters": {
+                                  "entityName": "kyn_agenttenantwides",
+                                  "recordId": "@items('Apply_to_each_Existing_Record')?['kyn_agenttenantwideid']",
+                                  "item/kyn_cleanupdecision": "@if(greaterOrEquals(add(int(coalesce(items('Apply_to_each_Existing_Record')?['kyn_missingcounter'], 0)), 1), 3), 'EscalateReview', 'MarkedMissing_NoHardDelete')",
+                                  "item/kyn_lastsyncstatus": "NotSeenInCurrentRun",
+                                  "item/kyn_missingcounter": "@add(int(coalesce(items('Apply_to_each_Existing_Record')?['kyn_missingcounter'], 0)), 1)",
+                                  "item/statecode": 1,
+                                  "item/statuscode": 2
+                                },
+                                "host": {
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                                  "operationId": "UpdateRecord",
+                                  "connectionName": "shared_commondataserviceforapps_1"
+                                }
+                              },
+                              "metadata": {
+                                "operationMetadataId": "a70b0456-10f5-4472-a45a-5a654ef228cc"
+                              }
+                            },
+                            "Increment_varMarkedMissing": {
+                              "type": "IncrementVariable",
+                              "inputs": {
+                                "name": "varMarkedMissing",
+                                "value": 1
+                              },
+                              "runAfter": {
+                                "Update_Stale_Record": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "a86934ed-0f47-4017-af9c-73379615828e"
+                              }
+                            }
+                          },
+                          "else": {
+                            "actions": {}
+                          },
+                          "metadata": {
+                            "operationMetadataId": "7eda88cc-94b9-40a4-a386-d5f3ca1f7e71"
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "List_All_Agent_Records": [
+                          "Succeeded"
+                        ]
+                      },
+                      "runtimeConfiguration": {
+                        "concurrency": {
+                          "repetitions": 50
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "2253d47f-b416-4ef9-904d-2a65f428b8ae"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "metadata": {
+                    "operationMetadataId": "8464aabb-a0df-45b4-a628-29d9d0cbc452"
+                  }
+                }
+              },
+              "runAfter": {
+                "Do_Until_All_Pages": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3fb5ef3d-c953-45ea-80ea-a51d25b8c53d"
+              }
+            },
+            "Compose_Final_Result": {
+              "type": "Compose",
+              "inputs": {
+                "summary": "=== Agent Inventory Run ===\nInicio: @{variables('varRunStartTime')}\nFin: @{utcNow()}\n\nCreados: @{variables('varCreated')}\nActualizados: @{variables('varUpdated')}\nMarcados como ausentes: @{variables('varMarkedMissing')}\nAgentes procesados: @{length(variables('varProcessedAgents'))}\nErrores: @{length(variables('varErrors'))}",
+                "created": "@variables('varCreated')",
+                "updated": "@variables('varUpdated')",
+                "markedMissing": "@variables('varMarkedMissing')",
+                "processed": "@length(variables('varProcessedAgents'))",
+                "errors": "@variables('varErrors')",
+                "errorDetails": "@join(variables('varErrors'), '\n')"
+              },
+              "runAfter": {
+                "Scope_Cleanup_Deleted": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "27342217-059c-4ad7-bbf1-90b7bc92c8e7"
+              }
+            },
+            "Condition": {
+              "type": "If",
+              "expression": {
+                "greater": [
+                  "@length(body('List_Active_Report_Subscriptions')?['value'])",
+                  0
+                ]
+              },
+              "actions": {
+                "Condition_Use_Subscription_Table": {
+                  "type": "If",
+                  "expression": {
+                    "greater": [
+                      "@length(body('List_Active_Report_Subscriptions')?['value'])",
+                      0
+                    ]
+                  },
+                  "actions": {
+                    "Apply_to_each_Recipient_From_Table": {
+                      "type": "Foreach",
+                      "foreach": "@coalesce(body('List_Active_Report_Subscriptions')?['value'], createArray())",
+                      "actions": {
+                        "Compose_RecipientEmail": {
+                          "type": "Compose",
+                          "inputs": "@trim(coalesce(item()?['kyn_recipientemail'], ''))",
+                          "metadata": {
+                            "operationMetadataId": "2c5130d5-f3b9-4d2f-8178-0fd8d29453a6"
+                          }
+                        },
+                        "Send_an_email_(V2)": {
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "parameters": {
+                              "emailMessage/To": "@outputs('Compose_RecipientEmail')",
+                              "emailMessage/Subject": "@{concat(parameters('Cliente o empresa informes flujo (kyn_ClienteoEmpresaInformesflujo)'), ' · Informe diario de sincronización del inventario de agentes')}",
+                              "emailMessage/Body": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<style>\nbody{font-family:Segoe UI,Arial,sans-serif;background:#f4f6f8;margin:0;padding:24px;color:#1f2937}\n.container{max-width:940px;margin:auto;background:#ffffff;border:1px solid #d0d5dd;border-radius:16px;overflow:hidden}\n.header{background:#0f172a;color:#ffffff;padding:24px 28px}\n.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}\n.title{font-size:28px;font-weight:700;margin-top:8px}\n.subtitle{font-size:14px;opacity:.88;margin-top:6px}\n.banner{background:#ecfdf3;color:#027a48;padding:16px 28px;border-bottom:1px solid #d1fadf}\n.section{padding:24px 28px}\n.cards{display:flex;gap:12px;flex-wrap:wrap}\n.card{flex:1 1 150px;background:#f8fafc;border:1px solid #e4e7ec;border-radius:12px;padding:16px}\n.card .label{font-size:12px;color:#475467;text-transform:uppercase;letter-spacing:.04em}\n.card .value{font-size:28px;font-weight:700;margin-top:8px;color:#101828}\n.good{border-top:4px solid #12b76a}\n.info{border-top:4px solid #2e90fa}\n.warn{border-top:4px solid #f79009}\n.alert{border-top:4px solid #f04438}\n.meta{width:100%;border-collapse:collapse}\n.meta td{padding:10px 12px;border-bottom:1px solid #eaecf0;font-size:14px}\n.meta td:first-child{width:240px;color:#475467;font-weight:600}\n.list{margin:0;padding-left:22px}\n.list li{margin-bottom:12px;line-height:1.45}\n.errors{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:16px;font-size:13px;white-space:pre-line}\n.muted{color:#475467;font-size:13px}\n.footer{padding:20px 28px;background:#0f172a;color:#ffffff;font-size:12px}\n</style>\n</head>\n<body>\n<div class=\"container\">\n  <div class=\"header\">\n    <div class=\"eyebrow\">@{parameters('Cliente o empresa informes flujo (kyn_ClienteoEmpresaInformesflujo)')}</div>\n    <div class=\"title\">@{concat(parameters('Cliente o empresa informes flujo (kyn_ClienteoEmpresaInformesflujo)'), ' · Informe diario de sincronización')}</div>\n    <div class=\"subtitle\">Inventario tenant-wide de agentes.</div>\n  </div>\n\n  <div class=\"section\">\n    <div class=\"cards\">\n      <div class=\"card good\">\n        <div class=\"label\">Creados</div>\n        <div class=\"value\">@{variables('varCreated')}</div>\n      </div>\n      <div class=\"card info\">\n        <div class=\"label\">Actualizados</div>\n        <div class=\"value\">@{variables('varUpdated')}</div>\n      </div>\n      <div class=\"card warn\">\n        <div class=\"label\">Marcados como inactivos</div>\n        <div class=\"value\">@{variables('varMarkedMissing')}</div>\n      </div>\n      <div class=\"card info\">\n        <div class=\"label\">Procesados</div>\n        <div class=\"value\">@{length(variables('varProcessedAgents'))}</div>\n      </div>\n      <div class=\"card alert\">\n        <div class=\"label\">Errores</div>\n        <div class=\"value\">@{length(variables('varErrors'))}</div>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"section\">\n    <table class=\"meta\">\n      <tr>\n        <td>Inicio de ejecución</td>\n        <td>@{formatDateTime(convertTimeZone(variables('varRunStartTime'),'UTC','Romance Standard Time'),'dd/MM/yyyy HH:mm')}</td>\n      </tr>\n      <tr>\n        <td>Fin de ejecución</td>\n        <td>@{formatDateTime(convertTimeZone(utcNow(),'UTC','Romance Standard Time'),'dd/MM/yyyy HH:mm')}</td>\n      </tr>\n      <tr>\n        <td>Duración</td>\n        <td>@{concat(string(div(sub(ticks(utcNow()), ticks(variables('varRunStartTime'))), 600000000)), ' min ', string(mod(div(sub(ticks(utcNow()), ticks(variables('varRunStartTime'))), 10000000), 60)), ' s')}</td>\n      </tr>\n      <tr>\n        <td>Modo de ejecución</td>\n        <td>Programado</td>\n      </tr>\n      <tr>\n        <td>Ámbito de descubrimiento</td>\n        <td>microsoft.copilotstudio/agents</td>\n      </tr>\n      <tr>\n        <td>Modo de limpieza</td>\n        <td>Marcado inactivo si no aparece en la sincronización actual, sin borrado físico</td>\n      </tr>\n    </table>\n  </div>\n\n  <div class=\"section\">\n  \n  </div>\n\n  <div class=\"section\">\n    <div style=\"font-weight:700;margin-bottom:10px\">Errores</div>\n    <div class=\"errors\">@{if(equals(length(variables('varErrors')), 0), 'No se detectaron errores de procesamiento.', join(variables('varErrors'), '\n'))}</div>\n  </div>\n\n  <div class=\"footer\">@{concat(parameters('Cliente o empresa informes flujo (kyn_ClienteoEmpresaInformesflujo)'), ' · Agent Inventory · Power Platform Governance')}</div>\n</div>\n</body>\n</html>\n",
+                              "emailMessage/ReplyTo": "@outputs('Compose_RecipientEmail')",
+                              "emailMessage/Importance": "Normal"
+                            },
+                            "host": {
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                              "operationId": "SendEmailV2",
+                              "connectionName": "shared_office365_1"
+                            }
+                          },
+                          "runAfter": {
+                            "Compose_RecipientEmail": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "51e7fcb9-6d11-42c2-90bb-f3005a32965c"
+                          }
+                        }
+                      },
+                      "runtimeConfiguration": {
+                        "concurrency": {
+                          "repetitions": 50
+                        }
+                      },
+                      "metadata": {
+                        "operationMetadataId": "6d28cb48-c074-4a9e-b0d5-552961186c56"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "metadata": {
+                    "operationMetadataId": "8cce79a4-e5f5-47bb-88f3-f582d12b0f51"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Terminate": {
+                    "type": "Terminate",
+                    "inputs": {
+                      "runStatus": "Succeeded"
+                    },
+                    "metadata": {
+                      "operationMetadataId": "e783a90d-cad1-43fe-ab2f-51894b90e035"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Active_Report_Subscriptions": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "323e47f9-37e5-4403-ab34-012f38e7bc37"
+              }
+            },
+            "List_Active_Report_Subscriptions": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "kyn_suscripcionesdeinformeses",
+                  "$select": "kyn_name,kyn_recipientemail,statecode",
+                  "$filter": "statecode eq 0",
+                  "$top": 5000
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "connectionName": "shared_commondataserviceforapps_1"
+                }
+              },
+              "runAfter": {
+                "Compose_Final_Result": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "82737c5b-8165-45ca-af01-da84c0aef6c0"
+              }
+            }
+          },
+          "runAfter": {
+            "Init_varOwnerIdEmail": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e53d33cc-17a8-4939-ad73-1424775bc6bd"
+          }
+        },
+        "Init_varCreatedByDisplay": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCreatedByDisplay",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varRunStartTime": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c83a4f7c-a94d-4ffe-8cbe-3c4cc3c77119"
+          }
+        },
+        "Init_varOwnerIdDisplay": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varOwnerIdDisplay",
+                "type": "string",
+                "value": "System"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varCreatedByDisplay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "16ab2a36-46d6-4b67-83df-8c7a4fdbfab5"
+          }
+        },
+        "Initialize_variable_varDebugLog": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varDebugLog",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "60e295f4-f4cc-4f9d-9bf0-91b288d83278"
+          }
+        },
+        "Init_varCreatedByEmail": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCreatedByEmail",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varOwnerIdDisplay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "08f8fcbb-375d-450c-87c3-c4cc39038c4f"
+          }
+        },
+        "Init_varOwnerIdEmail": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varOwnerIdEmail",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varCreatedByEmail": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e1bcb325-c65b-4c15-8529-2099f0e8b042"
+          }
+        },
+        "Init_varCreatedAgentsHtml": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCreatedAgentsHtml",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_variable_varDebugLog": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b7173e74-c4f7-4f84-9a4e-205f4232aa01"
+          }
+        },
+        "Init_varCreatedNonSystemHtml": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCreatedNonSystemHtml",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_varCreatedAgentsHtml": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9f26f602-b0b2-4a2f-b1b4-a5a36f4434f4"
+          }
+        }
+      },
+      "description": "Automatiza el inventario de agentes a nivel tenant y genera un informe diario en español con trazabilidad de cambios reales. El flujo consolida los datos en Dataverse, aplica limpieza segura sin borrado duro y deja evidencia explícita de qué campos provocaron cada actualización."
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

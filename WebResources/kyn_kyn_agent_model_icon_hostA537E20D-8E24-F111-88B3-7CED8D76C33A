@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Icon Host</title>
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --line:#d7dee7;
+      --ink:#17212f;
+      --muted:#667085;
+      --fallback:#0f172a;
+      --fallback-2:#1d4ed8;
+    }
+    html,body{margin:0;padding:0;background:transparent;font-family:"Segoe UI",Arial,sans-serif}
+    .wrap{
+      min-height:120px;
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:linear-gradient(180deg,#fff 0%, var(--bg) 100%);
+      box-sizing:border-box;
+    }
+    .iconbox{
+      width:72px;
+      height:72px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      flex:0 0 72px;
+    }
+    .iconbox img{
+      width:52px;
+      height:52px;
+      object-fit:contain;
+      display:block;
+    }
+    .fallback{
+      width:52px;
+      height:52px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,var(--fallback) 0%, var(--fallback-2) 100%);
+      color:#fff;
+      font-weight:700;
+      font-size:16px;
+      letter-spacing:.04em;
+    }
+    .meta{min-width:0}
+    .label{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .title{
+      font-size:18px;
+      font-weight:700;
+      color:var(--ink);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:100%;
+    }
+    .sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+      line-height:1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="iconbox" id="iconBox"></div>
+    <div class="meta">
+      <div class="label">Modelo detectado</div>
+      <div class="title" id="providerText">Sin clasificar</div>
+      <div class="sub" id="modelText">No se ha identificado un proveedor o modelo conocido.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function readParam(name) {
+        var params = new URLSearchParams(window.location.search || "");
+        return params.get(name) || "";
+      }
+
+      function safeDecode(value) {
+        try {
+          return decodeURIComponent(value || "");
+        } catch (e) {
+          return value || "";
+        }
+      }
+
+      function createFallback(label) {
+        var div = document.createElement("div");
+        div.className = "fallback";
+        div.textContent = (label || "AI").substring(0, 3).toUpperCase();
+        return div;
+      }
+
+      function render() {
+        var provider = safeDecode(readParam("provider")) || "Sin clasificar";
+        var model = safeDecode(readParam("model")) || "No se ha identificado un modelo conocido.";
+        var icon = safeDecode(readParam("icon"));
+        var iconBox = document.getElementById("iconBox");
+        var providerText = document.getElementById("providerText");
+        var modelText = document.getElementById("modelText");
+
+        providerText.textContent = provider;
+        modelText.textContent = model;
+        iconBox.innerHTML = "";
+
+        if (icon) {
+          var img = document.createElement("img");
+          img.alt = provider;
+          img.src = "../WebResources/" + icon;
+          img.onerror = function () {
+            iconBox.innerHTML = "";
+            iconBox.appendChild(createFallback(provider));
+          };
+          iconBox.appendChild(img);
+          return;
+        }
+
+        iconBox.appendChild(createFallback(provider));
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

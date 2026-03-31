@@ -1,0 +1,123 @@
+<ImportExportXml version="9.2.26031.175" SolutionPackageVersion="9.2" languagecode="3082" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26031.175" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26031.00175">
+  <SolutionManifest>
+    <UniqueName>kynagentinventorytenantwide</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="Agent Inventory Tenant-wide" languagecode="3082" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Solución orientada a la visibilidad y gobierno centralizado de agentes a nivel tenant. Esta solución permite inventariar, clasificar y monitorizar todos los agentes existentes, independientemente de su origen, incluyendo tanto los desarrollados en Copilot Studio como los generados mediante experiencias de Copilot Lite u otros mecanismos emergentes. Proporciona una capa unificada de control que facilita la identificación de uso, adopción y riesgos, habilitando escenarios de gobierno, cumplimiento y optimización. Su objetivo es ofrecer una vista completa y accionable del ecosistema de agentes, eliminando silos y permitiendo una gestión eficiente y escalable dentro de la organización." languagecode="3082" />
+    </Descriptions>
+    <Version>2.7.0.9</Version>
+    <Managed>1</Managed>
+    <Publisher>
+      <UniqueName>kyn</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="KYN" languagecode="3082" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Kyndryl" languagecode="3082" />
+      </Descriptions>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>kyn</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>14825</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="kyn_agenttenantwide" behavior="0" />
+      <RootComponent type="1" schemaName="kyn_suscripcionesdeinformes" behavior="0" />
+      <RootComponent type="20" id="{94fb8dce-ab35-4185-b5d3-744b74be8276}" behavior="0" />
+      <RootComponent type="29" id="{612266cd-f828-f111-8341-7ced8d488e89}" behavior="0" />
+      <RootComponent type="31" id="{3907a525-f024-f111-8341-000d3ad8f786}" behavior="0" />
+      <RootComponent type="60" id="{4938ed08-0523-4a9b-b6b7-408604def17c}" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_Bienvenida_Agent_Inventory" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_chatgpt_icon" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_claude_ai_icon" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_copilot_icon" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_copilo_ticon" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_dashboard" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_kyn_agent_model_icon" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_kyn_agent_model_icon_host" behavior="0" />
+      <RootComponent type="61" schemaName="kyn_Report_Subscriptions" behavior="0" />
+      <RootComponent type="62" schemaName="kyn_AgentControlHubtenantwide" behavior="0" />
+      <RootComponent type="80" schemaName="kyn_AgentControlHubtenantwide" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="EnablePowerBIQuickReport" solution="SettingDefinitionsData (9.2.2601.2601231)" id.uniquename="EnablePowerBIQuickReport">
+          <package appName="AppModule" version="9.2.2601.2601231">AppModuleSolutionAnchor (9.2.2601.2601231)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=kyn_AgentControlHubtenantwide,settingdefinitionid.uniquename=EnablePowerBIQuickReport" id.parentappmoduleid.uniquename="kyn_AgentControlHubtenantwide" id.settingdefinitionid.uniquename="EnablePowerBIQuickReport" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="FormFillBarUXEnabled" solution="msdyn_FormsInfraSettings (1.0.0.8)" id.uniquename="FormFillBarUXEnabled">
+          <package appName="PowerAppsFormsApp Package" version="1.0.0.5">msdyn_FormsInsightSettings (1.0.0.5)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=kyn_AgentControlHubtenantwide,settingdefinitionid.uniquename=FormFillBarUXEnabled" id.parentappmoduleid.uniquename="kyn_AgentControlHubtenantwide" id.settingdefinitionid.uniquename="FormFillBarUXEnabled" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="HeaderAndNavigationRefresh" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.15)" id.uniquename="HeaderAndNavigationRefresh">
+          <package appName="PowerAppsAppFramework Package" version="1.0.0.25">PowerAppsAppFramework_Anchor (1.0.0.25)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=kyn_AgentControlHubtenantwide,settingdefinitionid.uniquename=HeaderAndNavigationRefresh" id.parentappmoduleid.uniquename="kyn_AgentControlHubtenantwide" id.settingdefinitionid.uniquename="HeaderAndNavigationRefresh" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

@@ -1,39 +1,108 @@
 # Agent Inventory Tenant-wide
 
-Documentacion oficial de la solucion Power Platform `Agent Inventory Tenant-wide`.
+Repositorio de la solución Power Platform `kynagentinventorytenantwide`, orientada al inventario, visibilidad y gobierno de agentes a nivel tenant.
 
-Este repositorio ya no contiene notas sueltas de release. La documentacion se ha reorganizado como documentacion formal de solucion: alcance funcional, arquitectura, modelo de datos, automatizacion, app model-driven, seguridad, despliegue, operacion y troubleshooting.
+Este repositorio contiene la solución descomprimida como fuente principal. La documentación se ha rehecho tomando como referencia el estado real actual del contenido en raíz:
 
-## Objetivo de la solucion
+- `solution.xml`
+- `customizations.xml`
+- `Workflows/`
+- `WebResources/`
+- `Reports/`
+- `environmentvariabledefinitions/`
 
-La solucion proporciona inventario tenant-wide de agentes, consolidacion en Dataverse, visualizacion operativa en app model-driven y distribucion de reportes personalizables por usuario a partir de una tabla de suscripciones mantenida en la propia aplicacion.
+## Contenido
 
-## Principios de diseno
+1. [Estado actual](#estado-actual)
+2. [Estructura del repositorio](#estructura-del-repositorio)
+3. [Mapa de documentación](#mapa-de-documentación)
+4. [Importación y despliegue](#importación-y-despliegue)
+5. [Observaciones de mejora](#observaciones-de-mejora)
 
-- El inventario debe reflejar datos de la consulta origen con un modelo consistente.
-- La configuracion de notificaciones y reportes debe vivir en Dataverse y en la app, no en HTML ni en parametros ocultos.
-- La solucion debe ser importable, mantenible y operable como conjunto: tablas, vistas, formularios, app y flujos.
-- Los modos de reporte deben ser comprensibles por negocio y trazables tecnicamente.
+## Estado actual
 
-## Estructura documental
+- Solución: `kynagentinventorytenantwide`
+- Nombre mostrado: `Agent Inventory Tenant-wide`
+- Versión actual en `solution.xml`: `2.7.0.9`
+- Tipo de paquete actual: `managed`
+- Publisher: `kyn`
 
-- `docs/01_resumen_funcional.md`
-- `docs/02_arquitectura_funcional_y_tecnica.md`
-- `docs/03_modelo_datos_y_gobierno.md`
-- `docs/04_automatizacion_y_flujos.md`
-- `docs/05_app_model_driven_y_experiencia_usuario.md`
-- `docs/06_seguridad_operacion_y_soporte.md`
-- `docs/07_despliegue_y_release_management.md`
-- `docs/08_troubleshooting_y_lecciones_aprendidas.md`
+Componentes identificados en la solución actual:
 
-## Anexos tecnicos
+- 2 tablas Dataverse:
+  - `kyn_agenttenantwide`
+  - `kyn_suscripcionesdeinformes`
+- 1 flujo Power Automate:
+  - `KYN Agent Inventory tenant-wide`
+- 1 dashboard
+- 1 model-driven app:
+  - `kyn_AgentControlHubtenantwide`
+- 1 rol de seguridad
+- 1 informe
+- 9 web resources
+- 1 variable de entorno presente físicamente en el repositorio:
+  - `kyn_ClienteoEmpresaInformesflujo`
 
-- `anexos/01_diccionario_campos.csv`
-- `anexos/02_expresiones_flujo.txt`
-- `anexos/03_fetchxml_vistas.xml`
-- `anexos/04_matriz_roles_permisos.csv`
-- `anexos/05_checklist_go_live.md`
+## Estructura del repositorio
 
-## Paquetes de solucion
+```text
+Agent-Inventory-Tenant-wide/
+├── README.md
+├── solution.xml
+├── customizations.xml
+├── [Content_Types].xml
+├── Workflows/
+├── WebResources/
+├── Reports/
+├── environmentvariabledefinitions/
+├── Release/
+└── docs/
+```
 
-El repositorio contiene los paquetes de solucion disponibles en este estado de trabajo. La documentacion es aplicable a la linea funcional actual de la solucion y debe acompañar al paquete promovido a cada entorno.
+Criterio documental:
+
+- la raíz contiene la solución exportada;
+- `docs/` contiene la documentación oficial del proyecto;
+- `Release/` contiene paquetes auxiliares o históricos que no deben confundirse con la fuente principal;
+- la documentación diferencia entre:
+  - estado real actual;
+  - deuda técnica observada;
+  - mejoras recomendadas.
+
+## Mapa de documentación
+
+- [Índice general](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/00_indice_general.md)
+- [01. Solución y alcance](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/01_solucion_y_alcance.md)
+- [02. Arquitectura funcional y técnica](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/02_arquitectura_funcional_y_tecnica.md)
+- [03. Modelo de datos](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/03_modelo_de_datos.md)
+- [04. Flujo principal Power Automate](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/04_flujo_principal_power_automate.md)
+- [05. App, dashboard y seguridad](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/05_app_dashboard_y_seguridad.md)
+- [06. Despliegue, configuración y operación](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/06_despliegue_configuracion_y_operacion.md)
+- [07. Deuda técnica y mejoras recomendadas](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/07_deuda_tecnica_y_mejoras_recomendadas.md)
+
+## Importación y despliegue
+
+Referencia principal:
+
+- [06. Despliegue, configuración y operación](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/06_despliegue_configuracion_y_operacion.md)
+
+Puntos a validar antes de importar:
+
+- conexiones solution-aware del flujo;
+- presencia de variables de entorno requeridas por el flujo;
+- dependencias de app settings indicadas en `solution.xml`;
+- consistencia entre el flujo exportado y los componentes raíz declarados.
+
+## Observaciones de mejora
+
+La solución actual funciona como base documental, pero no está completamente saneada. Las principales observaciones detectadas en el contenido actual son:
+
+- el flujo no usa ya `reportmode`, pero todavía conserva variables legacy de debug y HTML;
+- `solution.xml` aún declara `kyn_Report_Subscriptions` como web resource raíz;
+- el flujo referencia parámetros de URL para la app y vistas, pero en el repositorio solo está presente una variable de entorno física;
+- siguen existiendo columnas legacy en `kyn_agenttenantwide`, como `kyn_modelNormalized` y `kyn_originNormalized`;
+- el repositorio contiene restos de releases antiguas y cambios eliminados que conviene consolidar antes de publicar definitivamente.
+
+Estas mejoras están detalladas y priorizadas en:
+
+- [07. Deuda técnica y mejoras recomendadas](/Volumes/Ext_1TB/Github/Agent-Inventory-Tenant-wide/docs/07_deuda_tecnica_y_mejoras_recomendadas.md)

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Inventory · Bienvenida</title>
+  <style>
+    :root {
+      --bg: #eef2f6;
+      --surface: #ffffff;
+      --ink: #17212f;
+      --muted: #5b6472;
+      --line: #d7dee7;
+      --brand: #0f172a;
+      --brand-2: #1d4ed8;
+      --accent: #0ea5a4;
+      --good: #127a52;
+      --soft: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(29, 78, 216, .12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 164, .10), transparent 30%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 56px
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--brand) 0%, #1e293b 60%, #123b78 100%);
+      color: #fff;
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, .18);
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .78;
+    }
+
+    h1 {
+      margin: 10px 0 12px;
+      font-size: 38px;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 760px;
+      font-size: 16px;
+      line-height: 1.65;
+      opacity: .92;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .tile,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, .05);
+    }
+
+    .tile {
+      padding: 20px
+    }
+
+    .tile h2,
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .tile p,
+    .panel p,
+    .panel li {
+      color: var(--muted);
+      line-height: 1.58;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 16px;
+    }
+
+    .panel {
+      padding: 24px
+    }
+
+    .steps {
+      margin: 14px 0 0;
+      padding-left: 20px;
+    }
+
+    .steps li {
+      margin-bottom: 10px
+    }
+
+    .pillbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .callout {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: #ecfdf3;
+      border: 1px solid #ccebd8;
+      color: var(--good);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+
+    code {
+      font-family: Consolas, Monaco, "Andale Mono", monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #334155;
+    }
+
+    @media (max-width:860px) {
+      .section {
+        grid-template-columns: 1fr
+      }
+
+      h1 {
+        font-size: 30px
+      }
+
+      .hero {
+        padding: 28px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Power Platform Governance</div>
+      <h1>Agent Inventory Tenant-wide</h1>
+      <div class="lead">
+        Página de bienvenida y consulta rápida del producto. Este inventario centraliza agentes detectados en el tenant,
+        normaliza metadatos relevantes, conserva histórico y ofrece una vista operativa coherente para negocio, gobierno
+        y soporte.
+      </div>
+
+    </section>
+
+    <section class="grid">
+      <article class="tile">
+        <h2>Qué hace</h2>
+        <p>Descubre agentes del tenant, crea o actualiza registros en Dataverse, recalcula su estado operativo y genera
+          un informe diario de sincronización con trazabilidad de cambios reales.</p>
+      </article>
+      <article class="tile">
+        <h2>Qué no hace</h2>
+        <p>No crea ni modifica agentes en origen, no mide consumo real soportado de BizChat por agente y no realiza
+          borrado físico masivo automático.</p>
+      </article>
+      <article class="tile">
+        <h2>Cómo interpretar estados</h2>
+        <p><strong>Activo</strong> significa observado en la sincronización actual. <strong>Inactivo</strong> significa
+          no observado en la sincronización actual y puede reactivarse automáticamente si vuelve a detectarse.</p>
+      </article>
+      <article class="tile">
+        <h2>Perfil destinatario</h2>
+        <p>Usuarios de negocio, analistas y responsables de gobierno con acceso de lectura sobre el inventario.</p>
+      </article>
+    </section>
+
+    <section class="section" style="grid-template-columns: 1fr;">
+      <article class="panel">
+        <div
+          style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:20px;">
+          <h2 style="margin:0; font-size:24px; color:var(--brand);">Manual de usuario</h2>
+        </div>
+
+        <div class="grid" style="margin-top:0; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px;">
+          <div>
+            <h3 style="margin-top:0; font-size:16px; color:var(--brand-2);">Qué pueden hacer</h3>
+            <ul class="steps">
+              <li>Abrir la app y consultar dashboards;</li>
+              <li>Buscar agentes y filtrar por origen, entorno, owner, proveedor de modelo y estado de sincronización;
+              </li>
+              <li>Abrir el detalle de un agente y leer campos técnicos y funcionales;</li>
+              <li>Crear notas y seguimiento documental;</li>
+              <li>Exportar información desde vistas o reporte si su perfil lo permite.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="margin-top:0; font-size:16px; color:var(--brand-2);">Qué no pueden hacer</h3>
+            <ul class="steps">
+              <li>Crear agentes, editarlos en la plataforma origen o borrarlos del inventario;</li>
+              <li>Cambiar la definición de los flujos o modificar connection references;</li>
+              <li>Alterar reglas de seguridad.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid"
+          style="margin-top:24px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px;">
+          <div>
+            <h3 style="margin-top:0; font-size:16px; color:var(--accent);">Pasos de uso</h3>
+            <ol class="steps">
+              <li>Abrir la app <code>Agent Inventory tenant-wide APP</code>.</li>
+              <li>Entrar en <code>Dashboard</code> para visión general.</li>
+              <li>Entrar en <code>Agents</code> para analizar el detalle.</li>
+              <li>Usar filtros por: <code>ownerEmail</code>, <code>creatorEmail</code>, <code>originNormalized</code>,
+                <code>lastSyncStatus</code>.
+              </li>
+              <li>Abrir un registro para inspección.</li>
+              <li>Añadir una nota si se requiere seguimiento.</li>
+            </ol>
+          </div>
+          <div>
+            <h3 style="margin-top:0; font-size:16px; color:var(--accent);">Cómo interpretar campos clave</h3>
+            <ul class="steps">
+              <li><code>ownerEmail</code> / <code>creatorEmail</code>: email resuelto del owner/creador técnico.</li>
+              <li><code>lastSyncStatus</code>: estado operativo observado en la última sincronización.</li>
+              <li><strong>Activo</strong>: el agente ha sido detectado en la ejecución actual.</li>
+              <li><strong>Inactivo</strong>: el agente no ha sido detectado en la ejecución actual.</li>
+              <li><code>lastSeenOn</code>: última vez en la que el agente fue detectado por el flujo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:24px; background: #f8fafc; border-color: #e2e8f0; color: var(--ink);">
+          <h3 style="margin-top:0; font-size:16px; margin-bottom:8px; color:var(--good);">💡 Buenas prácticas</h3>
+          <ul class="steps" style="margin-top:0;">
+            <li>Usar notas para seguimientos;</li>
+
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <article class="panel">
+        <h2>Soporte operativo</h2>
+        <p>Ante inconsistencias, revisar primero el correo de sincronización o contactar con soporte CoE Operaciones.
+        </p>
+        <div class="callout" style="margin-top: 14px;">
+          El inventario es una fotografía operativa de la última sincronización. Si un agente no aparece en el origen,
+          no se borra: pasa a inactivo y conserva su histórico.
+        </div>
+      </article>
+    </section>
+
+    <div class="footer">Agent Inventory · Manual visual de bienvenida</div>
+  </div>
+</body>
+
+</html>
